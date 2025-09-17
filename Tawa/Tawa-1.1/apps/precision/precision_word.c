@@ -1,0 +1,399 @@
+/* Works out the recall/precision breakeven point for the word-based model on some
+testfiles. */
+#include <assert.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <strings.h>
+
+#if defined (SYSTEM_LINUX)
+#include <getopt.h> /* for getopt on Linux systems */
+#endif
+
+#include "io.h"
+#include "track.h"
+#include "judgments.h"
+#include "word.h"
+#include "text.h"
+#include "table.h"
+#include "model.h"
+
+#define TESTS 3                /* Number of tests to apply */
+#define TEST_CODELENGTH 0      /* Test uses just codelength as a measure */
+#define TEST_AVG_CODELENGTH 1  /* Test uses just (codelength/textlength) */
+#define TEST_AVG_CODEDLENGTH 2 /* Test uses just (codelength/codedlength) */
+
+#define TEST_CODELENGTH_SCALE 100 /* For scaling codelength tests to same
+				     scale as the other tests */
+
+#define INCR_THRESHOLD 0.01    /* Increment for threshold1 */
+#define MAX_THRESHOLD 0.3      /* Maximum value for threshold */
+#define MIN_THRESHOLD -0.3     /* Minimum value for threshold */
+
+#define INCR_THRESHOLD1 0.05   /* Increment for threshold1 */
+#define START_THRESHOLD1 -9.0  /* Starting value for threshold1 */
+#define MAX_THRESHOLD1 6.0     /* Maximum value for threshold1 */
+#define MIN_THRESHOLD1 (START_THRESHOLD1 - INCR_THRESHOLD1)
+/* Minimum for threshold1 is one increment below the starting value for
+   threshold1 */
+
+#define MAX_ORDER 5       /* Maximum order of the model */
+#define MAX_ALPHABET 256  /* Default max. alphabet size for all PPM models */
+#define MAX_FILENAME 256  /* Maximum length of a filename string */
+#define MAX_TOPIC 256     /* Maximum size of a topic name to identify a model */
+
+#define MAX_TESTFILES 20000 /* Maximum number of testfiles */
+
+unsigned int debugLevel = 0;
+
+unsigned int Testfiles [MAX_TESTFILES];
+unsigned int Testfile_keys [MAX_TESTFILES];
+char Testfile_names [MAX_TESTFILES][MAX_FILENAME];
+unsigned int Test_positive_words_tracks [MAX_TESTFILES];
+unsigned int Test_negative_words_tracks [MAX_TESTFILES];
+unsigned int Testfiles_count = 0;
+
+unsigned int Positive_words_model;
+unsigned int Negative_words_model;
+unsigned int Judgments_table;
+boolean DumpCharacters = FALSE;
+
+char Topic [MAX_TOPIC];
+
+void
+loadTestFiles (char *filename)
+/* Loads the test files from the list of filenames in the file filename. */
+{
+    char testfile_no [MAX_FILENAME];
+    char testfile_name [MAX_FILENAME];
+    unsigned int testfile, testfile_key, testfile_count;
+    FILE *fp;
+
+    fprintf (stderr, "Loading data files from file %s\n", filename);
+    if ((fp = fopen (filename, "r")) == NULL)
+      {
+	fprintf (stderr, "Precision: can't open file %s\n", filename);
+	exit (1);
+      }
+
+    testfile_count = 0;
+    while ((fscanf (fp, "%s %s", testfile_no, testfile_name) != EOF))
+    {
+      testfile = TXT_open_file (testfile_name, "r", NULL, "Precision: can't open file");
+      Testfiles [testfile_count] = TXT_load_file (testfile);
+      testfile_key = TXT_create_text ();
+      Testfile_keys [testfile_count] = testfile_key;
+      TXT_append_string (testfile_key, testfile_no);
+      strcpy (Testfile_names [testfile_count], testfile_name);
+      TXT_close_file (testfile);
+
+      testfile_count++;
+    }
+    fclose (fp);
+
+    Testfiles_count = testfile_count;
+}
+
+void
+usage (void)
+{
+    fprintf (stderr,
+	     "Usage: codelength [options] <input-text\n"
+	     "\n"
+	     "options:\n"
+	     "  -T s\tmodel topic name=s (required)\n"
+	     "  -c\tdump codelength above threshold for each character\n"
+	     "  -d n\tdebug level=n\n"
+	     "  -j fn\tlist of test judgments=fn (required)\n"
+	     "  -n fn\tnegative words model filename=fn (required)\n"
+	     "  -p fn\tpositive words model filename=fn (required)\n"
+	     "  -t fn\tlist of test data files=fn (required)\n"
+	     );
+
+    exit (2);
+}
+
+void
+init_arguments (int argc, char *argv[])
+{
+    extern char *optarg;
+    extern int optind;
+    boolean positive_model_found;
+    boolean negative_model_found;
+    boolean topic_found;
+    boolean judgments_found;
+    boolean testfiles_found;
+    unsigned int file;
+    int opt;
+
+    /* get the argument options */
+
+    positive_model_found = FALSE;
+    negative_model_found = FALSE;
+    topic_found = FALSE;
+    judgments_found = FALSE;
+    testfiles_found = FALSE;
+    while ((opt = getopt (argc, argv, "J:T:cd:n:p:t:")) != -1)
+	switch (opt)
+	{
+	case 'J':
+	    file = TXT_open_file (optarg, "r", NULL,
+				  "Test: can't open judgments table file");
+	    Judgments_table = TXT_load_table (file);
+	    if (debugLevel > 5)
+	        TXT_dump_table (Stderr_File, Judgments_table);
+	    judgments_found = TRUE;
+	    break;
+	case 'T':
+	    strcpy (Topic, optarg);
+	    topic_found = TRUE;
+	    break;
+	case 'c':
+	    DumpCharacters = TRUE;
+	    break;
+	case 'd':
+	    debugLevel = atoi (optarg);
+	    break;
+	case 'p':
+	    Positive_words_model = TLM_read_words_model
+	      (optarg, NULL /*"Loading model from file"*/,
+	       "Codelength: can't open positive model file");
+	    positive_model_found = TRUE;
+	    break;
+	case 'n':
+	    Negative_words_model = TLM_read_words_model
+	      (optarg, NULL /*"Loading model from file"*/,
+	       "Codelength: can't open negative model file");
+	    negative_model_found = TRUE;
+	    break;
+	case 't':
+	    loadTestFiles (optarg);
+	    testfiles_found = TRUE;
+	    break;
+	default:
+	    usage ();
+	    break;
+	}
+    if (!positive_model_found || !negative_model_found)
+    {
+        fprintf (stderr, "\nFatal error: missing models\n\n");
+        usage ();
+    }
+    if (!judgments_found)
+    {
+        fprintf (stderr, "\nFatal error: missing list of testfiles\n\n");
+        usage ();
+    }
+    if (!testfiles_found)
+    {
+        fprintf (stderr, "\nFatal error: missing list of testfiles\n\n");
+        usage ();
+    }
+    if (!topic_found)
+    {
+        fprintf (stderr, "\nFatal error: missing model topic name\n\n");
+        usage ();
+    }
+    for (; optind < argc; optind++)
+	usage ();
+}
+
+float
+codelengthTestfile (unsigned int testfile, float threshold,
+		    unsigned int *textlength, unsigned int *codedlength)
+/* Returns the codelength (in bits) for encoding the text using the ppm model. */
+{
+    unsigned int p, symbol, textlen, codedlen;
+    float positive_codelength, negative_codelength;
+    float total_codelength, diff_codelength;
+
+    textlen = TXT_length_text (Testfiles [testfile]);
+
+    /* Now get codelength for encoding each word */
+    total_codelength = 0;
+    codedlen = 0;
+    for (p=0; p < textlen; p++) /* encode each symbol */
+    {
+      TLM_get_track (Test_positive_words_tracks [testfile], p, &positive_codelength);
+      TLM_get_track (Test_negative_words_tracks [testfile], p, &negative_codelength);
+
+      if (positive_codelength && negative_codelength)
+	{
+	  diff_codelength = negative_codelength - positive_codelength;
+	  if ((threshold < START_THRESHOLD1) || (diff_codelength >= threshold))
+	    {
+	      codedlen++;
+	      total_codelength += diff_codelength;
+	    }
+
+	  if (DumpCharacters)
+	    {
+	      assert (TXT_get_symbol (Testfiles [testfile], p, &symbol));
+	      if (diff_codelength >= threshold)
+		fprintf (stderr, "%4d: (%c) = %7.3f (%.3f - %.3f)\n",
+			 p, symbol, diff_codelength, negative_codelength,
+			 positive_codelength);
+	      else
+		fprintf (stderr, "%4d: (%c)\n", p, symbol);
+	    }
+	}
+    }
+
+    if (debugLevel > 4)
+      fprintf (stderr,
+       "Model = %-8s Threshold = %4.1f Total = %8.3f Average = %6.3f Average1 = %6.3f\n",
+       Topic, threshold, total_codelength, (total_codelength / textlen),
+       (total_codelength / codedlen));
+
+    *textlength = textlen;
+    *codedlength = codedlen;
+    if (debugLevel > 2)
+        fprintf (stderr, "codelength = %.3f textlen = %d codedlen = %d\n",
+		 total_codelength, textlen, codedlen);
+    return (total_codelength);
+}
+
+void
+breakevenTestFiles (void)
+/* Calculates the breakeven recall/precision point for all testfiles. */
+{
+    unsigned int topic, topic_id, topic_count, testfile, t;
+    unsigned int retrieved_count [TESTS], correct_count [TESTS];
+    unsigned int textlength, codedlength;
+    boolean retrieved [TESTS], valid_topic, found_judgment;
+    float threshold, threshold1, codelength;
+    float recall [TESTS], precision [TESTS], average [TESTS];
+    float best_threshold [TESTS], best_threshold1 [TESTS];
+    float best_average [TESTS];
+
+    for (t = 0; t < TESTS; t++)
+      {
+	best_average [t] = 0.0;
+	best_threshold [t] = 0.0;
+	best_threshold1 [t] = 0.0;
+      }
+
+    topic = TXT_create_text ();
+    TXT_append_string (topic, Topic);
+
+    valid_topic = TXT_getid_table (Judgments_table, topic, &topic_id, &topic_count);
+    assert (valid_topic);
+
+    /* Make track records for compressing each test file */
+    for (testfile = 0; testfile < Testfiles_count; testfile++)
+      {
+        Test_positive_words_tracks [testfile] =
+	  TLM_make_words_track (TLM_standard_tracking, Positive_words_model,
+				Testfiles [testfile]);
+        Test_negative_words_tracks [testfile] =
+	  TLM_make_words_track (TLM_standard_tracking, Negative_words_model,
+				Testfiles [testfile]);
+      }
+    fprintf (stderr, "loaded all test files...\n\n");
+
+    for (threshold = MIN_THRESHOLD; threshold <= MAX_THRESHOLD;
+	 threshold += INCR_THRESHOLD)
+     {
+      for (threshold1 = MIN_THRESHOLD1; threshold1 <= MAX_THRESHOLD1;
+	   threshold1 += INCR_THRESHOLD1)
+      {
+	for (t = 0; t < TESTS; t++)
+	  {
+	    correct_count [t] = 0;
+	    retrieved_count [t] = 0;
+	  }
+
+	for (testfile = 0; testfile < Testfiles_count; testfile++)
+	  {
+	    if (debugLevel > 3)
+	        fprintf (stderr, "Test file: %s\n", Testfile_names [testfile]);
+
+	    codelength = codelengthTestfile
+	        (testfile, threshold1, &textlength, &codedlength);
+	    if (debugLevel > 2)
+	      {
+		fprintf (stderr, "File ");
+		TXT_dump_text (Stderr_File, Testfile_keys [testfile], NULL);
+		fprintf (stderr, " codelength %6.3f threshold %.3f threshold1 %.3f\n",
+			 codelength, threshold, threshold1);
+	      }
+
+	    if (debugLevel > 2)
+	        fprintf (stderr, "codelength = %.2f avg = %.2f avg1 = %.2f\n",
+			 codelength, (codelength/textlength),
+			 (codelength/codedlength));
+
+	    retrieved [TEST_CODELENGTH] =
+	        ((codelength/TEST_CODELENGTH_SCALE) >= threshold);
+	    retrieved [TEST_AVG_CODELENGTH] =
+	        ((codelength/textlength) >= threshold);
+	    retrieved [TEST_AVG_CODEDLENGTH] =
+	        ((codedlength > 0) && ((codelength/codedlength) >= threshold));
+
+	    if (debugLevel > 2)
+	        fprintf (stderr, "Retrieved: %d %d %d\n",
+			 retrieved [0], retrieved [1], retrieved [2]);
+
+	    found_judgment = FALSE;
+	    for (t = 0; t < TESTS; t++)
+	      if (retrieved [t])
+	      {
+		retrieved_count [t]++;
+		if (found_judgment || TXT_find_judgment
+		    (Judgments_table, Testfile_keys [testfile], topic))
+		  {
+		    found_judgment = TRUE;
+		    correct_count [t]++;
+		  }
+	      }
+	  }
+
+	if (debugLevel > 1)
+	  for (t = 0; t < TESTS; t++)
+	    fprintf (stderr, "threshold = %.2f threshold1 = %.2f correct = %d retrieved = %d total = %d\n",
+		     threshold, threshold1, correct_count [t],
+		     retrieved_count [t], topic_count);
+
+	for (t = 0; t < TESTS; t++)
+	  {
+	    recall [t]  = (float) correct_count [t] / topic_count;
+	    precision [t] = (float) correct_count [t] / retrieved_count [t];
+	    average [t] = (recall [t] + precision [t])/2;
+	  }
+
+	if (debugLevel > 1)
+	  for (t = 0; t < TESTS; t++)
+	    fprintf (stderr, "test: %d recall = %.3f precision = %.3f average = %.3f\n\n",
+		     t, recall [t], precision [t], average [t]);
+
+	for (t = 0; t < TESTS; t++)
+	  if (average [t] > best_average [t])
+	  {
+	    best_average [t] = average [t];
+	    best_threshold [t] = threshold;
+	    best_threshold1 [t] = threshold1;
+	  }
+      }
+     }
+
+    TXT_release_text (topic);
+
+    for (t = 0; t < TESTS; t++)
+      fprintf (stderr, "test: %d best average = %.3f threshold = %.3f threshold1 = %.3f\n",
+	       t, best_average [t], best_threshold [t], best_threshold1 [t]);
+}
+
+int
+main (int argc, char *argv[])
+{
+    init_arguments (argc, argv);
+
+    if (TLM_numberof_models () < 1){
+      usage();
+    }
+
+    breakevenTestFiles ();
+
+    TLM_release_models ();
+
+    exit (0);
+}

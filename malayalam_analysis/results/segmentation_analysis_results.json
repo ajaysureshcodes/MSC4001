@@ -1,0 +1,202 @@
+{
+  "malayalam_native_with_own_model": {
+    "original": {
+      "success": true,
+      "original_size": 5453,
+      "compressed_size": 893,
+      "compression_ratio": 6.1063829787234045,
+      "bits_per_char": 1.31,
+      "stderr_output": "Reading from text file /mnt/f/Research/malayalam_tawa_project/malayalam_analysis/results/temp_malayalam_native_original_input.txt\nWriting to text file /mnt/f/Research/malayalam_tawa_project/malayalam_analysis/results/temp_malayalam_native_original_output.dat\nbytes input 5453 bytes output 893 1.310 bpc\n",
+      "text_length": 1987,
+      "word_count": 212,
+      "avg_word_length": 8.377358490566039,
+      "spaces_count": 210
+    },
+    "no_spaces": {
+      "success": true,
+      "original_size": 5242,
+      "compressed_size": 999,
+      "compression_ratio": 5.247247247247247,
+      "bits_per_char": 1.525,
+      "stderr_output": "Reading from text file /mnt/f/Research/malayalam_tawa_project/malayalam_analysis/results/temp_malayalam_native_no_spaces_input.txt\nWriting to text file /mnt/f/Research/malayalam_tawa_project/malayalam_analysis/results/temp_malayalam_native_no_spaces_output.dat\nbytes input 5242 bytes output 999 1.525 bpc\n",
+      "text_length": 1776,
+      "word_count": 1,
+      "avg_word_length": 1776.0,
+      "spaces_count": 0
+    },
+    "char_spacing": {
+      "success": true,
+      "original_size": 7017,
+      "compressed_size": 3467,
+      "compression_ratio": 2.0239400057686763,
+      "bits_per_char": 3.953,
+      "stderr_output": "Reading from text file /mnt/f/Research/malayalam_tawa_project/malayalam_analysis/results/temp_malayalam_native_char_spacing_input.txt\nWriting to text file /mnt/f/Research/malayalam_tawa_project/malayalam_analysis/results/temp_malayalam_native_char_spacing_output.dat\nbytes input 7017 bytes output 3467 3.953 bpc\n",
+      "text_length": 3551,
+      "word_count": 1776,
+      "avg_word_length": 1.0,
+      "spaces_count": 1775
+    },
+    "random_spacing": {
+      "success": true,
+      "original_size": 5685,
+      "compressed_size": 1614,
+      "compression_ratio": 3.5223048327137545,
+      "bits_per_char": 2.271,
+      "stderr_output": "Reading from text file /mnt/f/Research/malayalam_tawa_project/malayalam_analysis/results/temp_malayalam_native_random_spacing_input.txt\nWriting to text file /mnt/f/Research/malayalam_tawa_project/malayalam_analysis/results/temp_malayalam_native_random_spacing_output.dat\nbytes input 5685 bytes output 1614 2.271 bpc\n",
+      "text_length": 2219,
+      "word_count": 444,
+      "avg_word_length": 4.0,
+      "spaces_count": 443
+    }
+  },
+  "malayalam_transliterated_with_own_model": {
+    "original": {
+      "success": true,
+      "original_size": 2562,
+      "compressed_size": 473,
+      "compression_ratio": 5.416490486257928,
+      "bits_per_char": 1.477,
+      "stderr_output": "Reading from text file /mnt/f/Research/malayalam_tawa_project/malayalam_analysis/results/temp_malayalam_transliterated_original_input.txt\nWriting to text file /mnt/f/Research/malayalam_tawa_project/malayalam_analysis/results/temp_malayalam_transliterated_original_output.dat\nbytes input 2562 bytes output 473 1.477 bpc\n",
+      "text_length": 1872,
+      "word_count": 187,
+      "avg_word_length": 9.016042780748663,
+      "spaces_count": 185
+    },
+    "no_spaces": {
+      "success": true,
+      "original_size": 2376,
+      "compressed_size": 701,
+      "compression_ratio": 3.3894436519258204,
+      "bits_per_char": 2.36,
+      "stderr_output": "Reading from text file /mnt/f/Research/malayalam_tawa_project/malayalam_analysis/results/temp_malayalam_transliterated_no_spaces_input.txt\nWriting to text file /mnt/f/Research/malayalam_tawa_project/malayalam_analysis/results/temp_malayalam_transliterated_no_spaces_output.dat\nbytes input 2376 bytes output 701 2.360 bpc\n",
+      "text_length": 1686,
+      "word_count": 1,
+      "avg_word_length": 1686.0,
+      "spaces_count": 0
+    },
+    "char_spacing": {
+      "success": true,
+      "original_size": 4061,
+      "compressed_size": 2910,
+      "compression_ratio": 1.39553264604811,
+      "bits_per_char": 5.733,
+      "stderr_output": "Reading from text file /mnt/f/Research/malayalam_tawa_project/malayalam_analysis/results/temp_malayalam_transliterated_char_spacing_input.txt\nWriting to text file /mnt/f/Research/malayalam_tawa_project/malayalam_analysis/results/temp_malayalam_transliterated_char_spacing_output.dat\nbytes input 4061 bytes output 2910 5.733 bpc\n",
+      "text_length": 3371,
+      "word_count": 1686,
+      "avg_word_length": 1.0,
+      "spaces_count": 1685
+    },
+    "random_spacing": {
+      "success": true,
+      "original_size": 2797,
+      "compressed_size": 1513,
+      "compression_ratio": 1.8486450760079312,
+      "bits_per_char": 4.327,
+      "stderr_output": "Reading from text file /mnt/f/Research/malayalam_tawa_project/malayalam_analysis/results/temp_malayalam_transliterated_random_spacing_input.txt\nWriting to text file /mnt/f/Research/malayalam_tawa_project/malayalam_analysis/results/temp_malayalam_transliterated_random_spacing_output.dat\nbytes input 2797 bytes output 1513 4.327 bpc\n",
+      "text_length": 2107,
+      "word_count": 422,
+      "avg_word_length": 3.995260663507109,
+      "spaces_count": 421
+    }
+  },
+  "malayalam_native_with_malayalam_transliterated_model": {
+    "original": {
+      "success": true,
+      "original_size": 5453,
+      "compressed_size": 5194,
+      "compression_ratio": 1.0498652291105122,
+      "bits_per_char": 7.62,
+      "stderr_output": "Reading from text file /mnt/f/Research/malayalam_tawa_project/malayalam_analysis/results/temp_malayalam_native_cross_original_input.txt\nWriting to text file /mnt/f/Research/malayalam_tawa_project/malayalam_analysis/results/temp_malayalam_native_cross_original_output.dat\nbytes input 5453 bytes output 5194 7.620 bpc\n",
+      "text_length": 1987,
+      "word_count": 212,
+      "avg_word_length": 8.377358490566039,
+      "spaces_count": 210
+    },
+    "no_spaces": {
+      "success": true,
+      "original_size": 5242,
+      "compressed_size": 5012,
+      "compression_ratio": 1.0458898643256185,
+      "bits_per_char": 7.649,
+      "stderr_output": "Reading from text file /mnt/f/Research/malayalam_tawa_project/malayalam_analysis/results/temp_malayalam_native_cross_no_spaces_input.txt\nWriting to text file /mnt/f/Research/malayalam_tawa_project/malayalam_analysis/results/temp_malayalam_native_cross_no_spaces_output.dat\nbytes input 5242 bytes output 5012 7.649 bpc\n",
+      "text_length": 1776,
+      "word_count": 1,
+      "avg_word_length": 1776.0,
+      "spaces_count": 0
+    },
+    "char_spacing": {
+      "success": true,
+      "original_size": 7017,
+      "compressed_size": 6525,
+      "compression_ratio": 1.0754022988505747,
+      "bits_per_char": 7.439,
+      "stderr_output": "Reading from text file /mnt/f/Research/malayalam_tawa_project/malayalam_analysis/results/temp_malayalam_native_cross_char_spacing_input.txt\nWriting to text file /mnt/f/Research/malayalam_tawa_project/malayalam_analysis/results/temp_malayalam_native_cross_char_spacing_output.dat\nbytes input 7017 bytes output 6525 7.439 bpc\n",
+      "text_length": 3551,
+      "word_count": 1776,
+      "avg_word_length": 1.0,
+      "spaces_count": 1775
+    },
+    "random_spacing": {
+      "success": true,
+      "original_size": 5685,
+      "compressed_size": 5396,
+      "compression_ratio": 1.0535581912527798,
+      "bits_per_char": 7.593,
+      "stderr_output": "Reading from text file /mnt/f/Research/malayalam_tawa_project/malayalam_analysis/results/temp_malayalam_native_cross_random_spacing_input.txt\nWriting to text file /mnt/f/Research/malayalam_tawa_project/malayalam_analysis/results/temp_malayalam_native_cross_random_spacing_output.dat\nbytes input 5685 bytes output 5396 7.593 bpc\n",
+      "text_length": 2219,
+      "word_count": 444,
+      "avg_word_length": 4.0,
+      "spaces_count": 443
+    }
+  },
+  "malayalam_transliterated_with_malayalam_native_model": {
+    "original": {
+      "success": true,
+      "original_size": 2562,
+      "compressed_size": 5022,
+      "compression_ratio": 0.5101553166069295,
+      "bits_per_char": 15.681,
+      "stderr_output": "Reading from text file /mnt/f/Research/malayalam_tawa_project/malayalam_analysis/results/temp_malayalam_transliterated_cross_original_input.txt\nWriting to text file /mnt/f/Research/malayalam_tawa_project/malayalam_analysis/results/temp_malayalam_transliterated_cross_original_output.dat\nbytes input 2562 bytes output 5022 15.681 bpc\n",
+      "text_length": 1872,
+      "word_count": 187,
+      "avg_word_length": 9.016042780748663,
+      "spaces_count": 185
+    },
+    "no_spaces": {
+      "success": true,
+      "original_size": 2376,
+      "compressed_size": 4869,
+      "compression_ratio": 0.4879852125693161,
+      "bits_per_char": 16.394,
+      "stderr_output": "Reading from text file /mnt/f/Research/malayalam_tawa_project/malayalam_analysis/results/temp_malayalam_transliterated_cross_no_spaces_input.txt\nWriting to text file /mnt/f/Research/malayalam_tawa_project/malayalam_analysis/results/temp_malayalam_transliterated_cross_no_spaces_output.dat\nbytes input 2376 bytes output 4869 16.394 bpc\n",
+      "text_length": 1686,
+      "word_count": 1,
+      "avg_word_length": 1686.0,
+      "spaces_count": 0
+    },
+    "char_spacing": {
+      "success": true,
+      "original_size": 4061,
+      "compressed_size": 6449,
+      "compression_ratio": 0.6297100325631881,
+      "bits_per_char": 12.704,
+      "stderr_output": "Reading from text file /mnt/f/Research/malayalam_tawa_project/malayalam_analysis/results/temp_malayalam_transliterated_cross_char_spacing_input.txt\nWriting to text file /mnt/f/Research/malayalam_tawa_project/malayalam_analysis/results/temp_malayalam_transliterated_cross_char_spacing_output.dat\nbytes input 4061 bytes output 6449 12.704 bpc\n",
+      "text_length": 3371,
+      "word_count": 1686,
+      "avg_word_length": 1.0,
+      "spaces_count": 1685
+    },
+    "random_spacing": {
+      "success": true,
+      "original_size": 2797,
+      "compressed_size": 5265,
+      "compression_ratio": 0.5312440645773979,
+      "bits_per_char": 15.059,
+      "stderr_output": "Reading from text file /mnt/f/Research/malayalam_tawa_project/malayalam_analysis/results/temp_malayalam_transliterated_cross_random_spacing_input.txt\nWriting to text file /mnt/f/Research/malayalam_tawa_project/malayalam_analysis/results/temp_malayalam_transliterated_cross_random_spacing_output.dat\nbytes input 2797 bytes output 5265 15.059 bpc\n",
+      "text_length": 2107,
+      "word_count": 422,
+      "avg_word_length": 3.995260663507109,
+      "spaces_count": 421
+    }
+  }
+}

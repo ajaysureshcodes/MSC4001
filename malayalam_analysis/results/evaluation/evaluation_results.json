@@ -1,0 +1,58 @@
+{
+  "test_sets": {
+    "malayalam_test": 1721,
+    "malayalam_train": 6884,
+    "transliterated_test": 1721,
+    "transliterated_train": 6884
+  },
+  "compression_ratios": {
+    "malayalam": {
+      "original_size": 50451987,
+      "compressed_size": 8285027,
+      "compression_ratio": 6.089538030473528,
+      "bits_per_char": 1.3137285554283522,
+      "success": true
+    },
+    "transliterated": {
+      "original_size": 25546672,
+      "compressed_size": 4969439,
+      "compression_ratio": 5.14075572715552,
+      "bits_per_char": 1.5561914287700567,
+      "success": true
+    }
+  },
+  "cross_compression": {
+    "malayalam_text": {
+      "with_malayalam_model": {
+        "compression_ratio": 6.102514209407783,
+        "bits_per_char": 1.31093508765076,
+        "success": true
+      },
+      "with_transliterated_model": {
+        "success": false,
+        "error": "Command '['/mnt/f/Research/malayalam_tawa_project/Tawa/Tawa-1.1/apps/encode/encode', '-a', '256', '-m', '/mnt/f/Research/malayalam_tawa_project/malayalam_analysis/models/malayalam_transliterated.model', '-i', '/mnt/f/Research/malayalam_tawa_project/malayalam_analysis/processed/combined_corpora/malayalam_native_corpus.txt', '-o', '/mnt/f/Research/malayalam_tawa_project/malayalam_analysis/results/evaluation/cross_test_malayalam_native_corpus_malayalam_transliterated.dat']' timed out after 60 seconds"
+      }
+    },
+    "transliterated_text": {
+      "with_malayalam_model": {
+        "success": false,
+        "error": "Command '['/mnt/f/Research/malayalam_tawa_project/Tawa/Tawa-1.1/apps/encode/encode', '-a', '65536', '-m', '/mnt/f/Research/malayalam_tawa_project/malayalam_analysis/models/malayalam_native.model', '-i', '/mnt/f/Research/malayalam_tawa_project/malayalam_analysis/processed/combined_corpora/malayalam_transliterated_corpus.txt', '-o', '/mnt/f/Research/malayalam_tawa_project/malayalam_analysis/results/evaluation/cross_test_malayalam_transliterated_corpus_malayalam_native.dat']' timed out after 60 seconds"
+      },
+      "with_transliterated_model": {
+        "compression_ratio": 5.398533858816817,
+        "bits_per_char": 1.4818838242413728,
+        "success": true
+      }
+    }
+  },
+  "segmentation": {
+    "malayalam_segmentation": {
+      "success": false,
+      "error": "[Errno 2] No such file or directory: '/mnt/f/Research/malayalam_tawa_project/Tawa/Tawa-1.1/apps/transform/segment'"
+    },
+    "transliterated_segmentation": {
+      "success": false,
+      "error": "[Errno 2] No such file or directory: '/mnt/f/Research/malayalam_tawa_project/Tawa/Tawa-1.1/apps/transform/segment'"
+    }
+  }
+}

@@ -1,0 +1,2 @@
+ഈ താളിലെ ചില ഭാഗങ്ങൾ മലയാളത്തിലല്ല എഴുതിയിരിക്കുന്നത്. ഇതു മലയാളത്തിലേക്ക് മാറ്റിയെഴുതാൻ സഹായിക്കുക 
+ഒരു പൂർണ്ണ സംഖ്യയെ അതിനേക്കാൾ ചെറിയ രണ്ട് പൂർണ്ണ സംഖ്യകളുടെ ഗുണനഫലമായി എഴുതാൻ സാധിക്കുകയാണെങ്കിൽ അത്തരം സംഖ്യയെ ആണു ഭാജ്യ സംഖ്യ എന്നു വിളിക്കുന്നത്. Equivalently, it is a positive integer that has at least one divisor other than 1 and itself. Every positive integer is composite, prime, or the unit 1, so the composite numbers are exactly the numbers that are not prime and not a unit.

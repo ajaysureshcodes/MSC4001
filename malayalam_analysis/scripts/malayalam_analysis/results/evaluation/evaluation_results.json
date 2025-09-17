@@ -1,0 +1,13 @@
+{
+  "test_sets": {
+    "malayalam_test": 0,
+    "malayalam_train": 0,
+    "transliterated_test": 0,
+    "transliterated_train": 0
+  },
+  "compression_ratios": {},
+  "cross_compression": {
+    "error": "Required corpus files not found"
+  },
+  "segmentation": {}
+}

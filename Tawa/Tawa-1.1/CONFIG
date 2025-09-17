@@ -1,0 +1,7 @@
+HOME = /mnt/f/Research/malayalam_tawa_project/Tawa/Tawa-1.1
+CC = gcc
+CXX = gcc
+INCLUDES = -I$(HOME)/include
+CFLAGS = -g -O -Wall -ansi -pedantic $(INCLUDES)
+CXXFLAGS = $(CFLAGS)
+LIBS = -L$(HOME)/lib -lTawa -lm

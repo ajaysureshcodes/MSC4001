@@ -1,0 +1,105 @@
+The email address of the person who maintains this package is:
+
+wjteahan@gmail.com
+
+Tawa Toolkit
+------------
+
+This tar distribution contains an implementation of the Text
+Analysis from Waikato Toolkit ("Tawa") written by Bill Teahan
+that was previosuly based on the Text Mining Toolkit ("TMT").
+
+
+Directories:
+-----------
+
+The distribution should contain the following directories:
+Tawa/
+	This contains the source for the API (application programming interface).
+
+config/
+	This contains various files for building libraries etc. (CONFIG,
+	INSTALL, README, etc.)
+
+data/
+	This contains various text files, such as the bible in various languages.
+	These files are used in many of the demos. 
+
+	The files data/misc/chinese.txt and data/demo/segment_Chinese.txt are
+	short exerpts (100,000 words and 1,000 symbols, respectively) taken
+	(with permission) from Guo Jin's (guojin@hotmail.com) PH_corpus of segmented
+        Mandarin Chinese text kindly provided with permission from Chris Brew
+        (Chris.Brew@edinburgh.ac.uk) and Julia Hockenmaier (julia@cogsci.ed.ac.uk).
+	The full PH_corpus may be obtained from the site ftp.cogsci.ed.ac.uk.
+
+demo/
+	This contains the makefile for building the models for the demos.
+
+doc/
+	This contains documentation about Tawa, including Latex source and postscript
+	for the DCC'99 paper and more recent NLE paper.
+
+include/ and lib/
+	These directories are used for compiling the sources.
+
+models/
+	This contains the models built for the demos.
+
+apps/
+	This contains a lot of sample demo applications and their source code which uses
+	the Tawa Toolkit's libraries.
+
+train/
+	This contains the train program and its source for building ("training") a
+	model, given some "training" text as input.
+
+
+How do I install it?
+--------------------
+
+Look in the file INSTALL for instructions.
+
+What does it do?
+----------------
+
+Lots. Look in the file samples/Doc.1 for a list of sample applications.
+There is also quite a few demo programs which can be run. Just type "make demo"
+in each of the sample sub-directories. 
+
+Overview:
+---------
+A few people have asked about the API for statistical modelling I'm
+currently writing. It's still in the development stages, but I can
+give a short example to illustrate how it works.
+
+There are three main types of objects:
+
+    1) model
+         A number associated with a statistical model e.g. one model might
+         have been trained on French text, anotGher on English text etc.
+    2) symbol
+         A number associated with a symbol in the alphabet (the API
+         treats the symbols as unsigned integers; it doesn't know anything
+         about what the symbols stands for i.e. whether they are ASCII characters,
+         letters in the English alphabet, hieroglyphics, or whatever).
+    3) context
+         A number associated with the prediction context; this context is
+         is updated after each symbol has been processed, and is used to make
+         a prediction for subsequent symbols.
+
+In the toolkit's libraries, there are routines to load a static model (from a file
+on disk), create dynamic models, create a context associated with a model, step
+through the probability distribution for predicting the next symbol given the current
+context etc.
+
+Experiments I did for my Ph.D. thesis based on using PPM text
+compression models showed that the language could be identified using
+this approach with almost 100% accuracy (it was even able to detect
+the difference between samples of American and British English text
+with 100% accuracy by training two models on text contained in the
+Brown and LOB corpora).
+
+Bill Teahan
+2017
+(wjteahan@gmail.com)
+

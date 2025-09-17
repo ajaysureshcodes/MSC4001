@@ -1,0 +1,15 @@
+/* Writes out the codelength for the input string specified by the -s argument
+   for the model specified by the -m argument. */
+#include <assert.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <strings.h>
+#include <unistd.h>
+
+#if defined (SYSTEM_LINUX)
+#include <getopt.h> /* for getopt on Linux systems */
+#endif
+
+float
+codelengthText (unsigned int model, char *text);
+/* Returns the codelength (in bits) for encoding the text using the PPM model. */

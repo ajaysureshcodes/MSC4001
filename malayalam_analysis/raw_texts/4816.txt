@@ -1,0 +1,3 @@
+ഇത് ഘടകം:Citation/CS1/Configuration എന്നതിന്റെ വിവരണതാൾ ആണ്
+This configuration file contains various data that controls the functioning of Module:Citation/CS1 and hence the way that Lua-based citations are generated.
+It is divided into three sections:

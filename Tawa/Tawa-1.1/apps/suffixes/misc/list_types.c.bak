@@ -1,0 +1,122 @@
+/* Program to list all the types for a single suffix model.
+   Assumes that the suffix trie can fit in memory. */
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <assert.h>
+
+#include "io.h"
+#include "model.h"
+
+#define FILE_SIZE 256             /* Max. length of a filename string */
+
+char Model [FILE_SIZE];           /* Name of file containing model */
+FILE *Model_fp;                   /* File that contains the suffix model */
+
+char Output_file [FILE_SIZE];     /* Name of output for writing output to */
+FILE *Output_fp;                  /* Output file pointer */
+boolean Output_file_found = FALSE;/* TRUE if we have an output file to write to. */
+
+unsigned int Type_length = 0;     /* Traverses suffix model's trie to this depth (= Type_length+1);
+				     if 0, then traverse whole trie */
+
+void junk ()
+/* For debugging purposes. */
+{
+    fprintf (stderr, "Got here\n");
+}
+
+void
+usage (void)
+{
+    fprintf (stderr,
+	     "Usage: list_types [options] <infile >outfile\n"
+	     "\n"
+	     "options:\n"
+	     "  -d n\tDebug level=n\n"
+	     "  -l n\tLength of type=n\n"
+	     "  -m fn\tModel filename=fn (required argument)\n"
+	     "  -o fn\tOutput filename=fn (required argument)\n"
+	     );
+    exit (2);
+}
+
+void
+init_arguments (int argc, char *argv[])
+{
+    extern char *optarg;
+    extern int optind;
+    int opt;
+    boolean model_file_found;
+
+    /* set defaults */
+    model_file_found = FALSE;
+
+    /* get the argument options */
+    while ((opt = getopt (argc, argv, "d:l:m:o:")) != -1)
+	switch (opt)
+	{
+	case 'd':
+            Debug_level = atol (optarg);
+	    break;
+	case 'l':
+            Type_length = atol (optarg);
+	    break;
+	case 'o':
+	    Output_file_found = TRUE;
+	    strcpy (Output_file, optarg);
+	    if ((Output_fp = fopen (optarg, "w")) == NULL)
+	      {
+		fprintf( stderr, "can't open file for option o %s\n", optarg);
+		exit(1);
+	      }
+	    if (Debug_level > 1)
+	        fprintf (stderr, "Writing to output file %s\n",
+			 optarg);
+	    break;
+	case 'm':
+	    model_file_found = TRUE;
+	    strcpy (Model, optarg);
+	    if ((Model_fp = fopen (optarg, "r")) == NULL)
+	      {
+		fprintf( stderr, "can't open file for option 1 %s\n", optarg);
+		exit(1);
+	      }
+	    if (Debug_level > 1)
+	        fprintf (stderr, "Loading Model from file %s\n",
+			 optarg);
+	    break;
+	default:
+	    usage ();
+	    break;
+	}
+
+    if (!model_file_found)
+        usage ();
+    for (; optind < argc; optind++)
+	usage ();
+}
+
+int
+main (int argc, char *argv[])
+{
+    struct SM_model_type *model;
+    struct SM_trie_type *trie;
+
+    init_arguments (argc, argv);
+
+    model = SM_load_model (Model_fp);
+
+    trie = SM_grow_trie (model);
+    SM_check_trie (model, trie);
+
+    if (Debug_level > 3)
+      {
+	SM_dump_model (stderr, model, trie, TRUE, TRUE, "1");
+      }
+
+    SM_traverse_trie (Output_fp, model, trie, Type_length);
+
+    exit (0);
+}

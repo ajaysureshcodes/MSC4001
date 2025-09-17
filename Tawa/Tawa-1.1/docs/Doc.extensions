@@ -1,0 +1,13 @@
+
+Add a "text list" object for manipulating lists of texts
+
+Add a "text db" for hierarchical/relational set-based database
+
+Extend markup models to allow for labelled alphabets
+e.g. need to map from TXT_is_punct --> labelled_symbol
+i.e. need for a translation conversion format
+     e.g. %f --> %t, where %t points to a translation function
+                     that passes the input symbol as a parameter
+                     and returns its translation
+     (for classification application, also need a TMM_get_markup routine
+      to get prior symbol, context and current model)

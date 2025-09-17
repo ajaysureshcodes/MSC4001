@@ -1,0 +1,15 @@
+Pruning heuristics:
+
+1. Only search if order 1 tag prediction has occured before.
+2. Do not predict if tag has occurred very few times and there exist
+   cases in the context (either order 0 or order 1) where other
+   symbols have occurred frequently:
+	freq < 5 and prob < 0.001
+
+	This reduced order 0 context for Suzanne tagset from 392 to 196 
+
+	freq < 3 and totl > 200 
+
+Using separate chars model for each tag:
+	Context lept at each node in path tree is now much greater (proportional to
+	number of tags) 

@@ -1,0 +1,50 @@
+0
+
+Creating new model
+
+Reading input file /Users/eesa0e/Bill/Data/Brown.ALL.txt
+Writing to output file Brown.model
+Trained on 5998526 symbols
+
+real	0m7.201s
+user	0m6.984s
+sys	0m0.200s
+1
+
+Creating new model
+
+Reading input file /Users/eesa0e/Bill/Data/Brown.ALL.txt
+Writing to output file Brown.model
+Trained on 5998526 symbols
+
+real	0m7.080s
+user	0m6.865s
+sys	0m0.190s
+2
+
+Creating new model
+
+Reading input file /Users/eesa0e/Bill/Data/Brown.ALL.txt
+Writing to output file Brown.model
+Trained on 5998526 symbols
+
+real	0m7.167s
+user	0m6.964s
+sys	0m0.193s
+3
+
+Creating new model
+
+Reading input file /Users/eesa0e/Bill/Data/Brown.ALL.txt
+Writing to output file Brown.model
+Trained on 5998526 symbols
+
+real	0m7.115s
+user	0m6.916s
+sys	0m0.196s
+4
+
+Creating new model
+
+Reading input file /Users/eesa0e/Bill/Data/Brown.ALL.txt
+Writing to output file Brown.model

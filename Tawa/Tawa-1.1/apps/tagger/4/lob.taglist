@@ -1,0 +1,148 @@
+THE TAGGED LOB CORPUS: LIST OF TAGS
+
+Each word and punctuation mark is followed by a tag, as listed
+below. Example: the_ATI house_NN. Some tags occur with ditto
+marks. Example: as_IN to_IN" (complex preposition). Ditto
+tagging is used to deal with special types of sequences. For
+more information, see the manual for the tagged LOB Corpus.
+
+!     exclamation mark
+&FO   formula   
+&FW   foreign word  
+(     left bracket
+)     right bracket   
+*'    open single quotes  
+**'   close single quotes 
+*-    dash
+,     comma   
+----- new sentence marker 
+.     full stop   
+...   ellipsis
+:     colon   
+;     semicolon   
+?     question mark   
+ABL   pre-qualifier (QUITE, RATHER, SUCH) 
+ABN   pre-quantifier (ALL, HALF)
+ABX   pre-quantifier/double conjunction (BOTH) 
+AP    post-determiner (FEW, FEWER, FEWEST, LAST, LATTER, LEAST, LESS, LITTLE,
+      MANY, MORE, MOST, MUCH, NEXT, ONLY, OTHER, OWN, SAME, SEVERAL, VERY)    
+AP$   OTHER'S
+APS   OTHERS
+APS$  OTHERS'   
+AT    singular article (A, AN, EVERY)  
+ATI   singular or plural article (THE, NO)
+BE    BE
+BED   WERE  
+BEDZ  WAS   
+BEG   BEING 
+BEM   AM, 'M
+BEN   BEEN  
+BER   ARE, 'RE   
+BEZ   IS, 'S
+CC    coordinating conjunction (AND, AND/OR, BUT, NOR, ONLY, OR, YET) 
+CD    cardinal (2, 3, etc.; TWO, THREE, etc.; HUNDRED,      
+      THOUSAND, etc.; DOZEN, ZERO)  
+CD$   cardinal + genitive   
+CD-CD hyphenated pair of cardinals  
+CD1   ONE, 1   
+CD1$  ONE'S 
+CD1S  ONES  
+CDS   cardinal + plural (TENS, MILLIOBS, DOZENS, etc.)   
+CS    subordinating conjunction (AFTER, ALTHOUGH, etc.)
+DO    DO
+DOD   DID   
+DOZ   DOES  
+DT    singular determiner (ANOTHER, EACH, THAT, THIS)  
+DT$   singular determiner + genitive (ANOTHER'S)
+DTI   singular or plural determiner (ANY, ENOUGH, SOME)
+DTS   plural determiner (THESE, THOSE)
+DTX   determiner/double conjunction (EITHER, NEITHER) 
+EX    existential THERE 
+HV    HAVE, 'VE  
+HVD   HAD past tense, 'D
+HVG   HAVING
+HVN   HAD past participle   
+HVZ   HAS, 'S   
+IN    preposition (ABOUT, ABOVE, etc.)   
+JJ    adjective 
+JJB   attributive-only adjective (CHIEF, ENTIRE, MAIN, etc.)
+JJR   comparative adjective 
+JJT   superlative adjective 
+JNP   adjective with word-initial capital (ENGLISH, GERMAN, etc.)   
+MD    modal auxiliary 
+NC    cited word
+NN    singular common noun  
+NN$   singular common noun + genitive   
+NNP   singular common noun with word-initial capital (ENGLISHMAN, GERMAN, etc.)
+NNP$  singular common noun with word-initial capital + genitive  
+NNPS  plural common noun with w.i.c.
+NNPS$ plural common noun with w.i.c. + genitive 
+NNS   plural common noun
+NNS$  plural common noun + genitive 
+NNU   abbreviated unit of measurement unmarked for number (\0HR, \0LB, etc.)   
+NNUS  abbreviated plural unit of measurement (\0GNS, \0YDS, etc.)  
+NP    singular proper noun   
+NP$   proper noun + genitive
+NPL   locative noun with w.i.c. (ABBEY, BRIDGE, etc.) 
+NPL$  locative noun with w.i.c. + genitive  
+NPLS  plural locative noun with w.i.c.  
+NPLS$ plural locative noun with w.i.c. +  genitive  
+NPS   plural proper noun
+NPS$  plural proper noun + genitive 
+NPT   titular noun with w.i.c. (ARCHBISHOP, CAPTAIN, etc.)
+NPT$  titular noun with w.i.c. + genitive   
+NPTS  plural titular noun with w.i.c.   
+NPTS$ plural titular noun with w.i.c. + genitive
+NR    adverbial noun (JANUARY, FEBRUARY, ETC.; SUNDAY, MONDAY, etc.; EAST,
+      WEST, etc.; TODAY, TOMORROW, TONIGHT; DOWNTOWN, HOME)
+NR$   adverbial noun + genitive 
+NRS   plural adverbial noun 
+NRS$  plural adverbial noun + genitive  
+OD    ordinal (1st, 2nd, etc.; FIRST, SECOND, etc.)
+OD$   ordinal + genitive
+PN    nominal pronoun (ANYBODY, ANYONE, ANYTHING; EVERYBODY, EVERYONE,
+      EVERYTHING; NOBODY, NONE, NOTHING; SOMEBODY, SOMEONE, SOMETHING; SO)
+PN$   nominal pronoun + genitive
+PP$   possessive determiner (MY, YOUR, etc.) 
+PP$$  possessive pronoun (MINE, YOURS, etc.)
+PP1A  I 
+PP1AS WE
+PP1O  ME
+PP1OS US, 'S
+PP2   YOU   
+PP3   IT
+PP3A  HE, SHE
+PP3AS THEY  
+PP3O  HIM, HER   
+PP3OS THEM, 'EM  
+PPL   singular reflexive pronoun   
+PPLS  plural reflexive pronoun, reciprocal pronoun 
+QL    qualifier (AS, AWFULLY, LESS, MORE, SO, TOO, VERY, etc.)
+QLP   post-qualifier (ENOUGH, INDEED)
+RB    adverb
+RB$   adverb + genitive (ELSE'S)
+RBR   comparative adverb
+RBT   superlative adverb
+RI    adverb (homograph of preposition: BELOW, NEAR, etc.)
+RN    nominal adverb (HERE, NOW, THERE, THEN, etc.)
+RP    adverbial particle (BACK, DOWN, OFF, etc.)
+TO    infinitival TO
+UH    interjection  
+VB    verb, base form  
+VBD   verb, past tense   
+VBG   present participle, gerund
+VBN   past participle   
+VBZ   verb, 3rd person singular  
+WDT   WH-determiner (WHAT, WHATEVER, WHATSOEVER, interrogative
+      WHICH, WHICHEVER, WHICHSOEVER)
+WDTR  WH-determiner, relative (WHICH)     
+WP    WH-pronoun, interrogative, nom+acc (WHO, WHOEVER)
+WP$   WH-pronoun, interrogative, gen (WHOSE)
+WP$R  WH-pronoun, relative, gen (WHOSE)
+WPA   WH-pronoun, nom (WHOSOEVER) 
+WPO   WH-pronoun, interrogative, acc (WHOM, WHOMSOEVER)
+WPOR  WH-pronoun, relative, acc (WHOM)
+WPR   WH-pronoun, relative, nom+acc (THAT, relative WHO)  
+WRB   WH-adverb (HOW, WHEN, etc.) 
+XNOT  NOT, N'T
+ZZ    letter of the alphabet (E, PI, X, etc.)

@@ -1,0 +1,10 @@
+ഈ താളിലെ ചില ഭാഗങ്ങൾ മലയാളത്തിലല്ല എഴുതിയിരിക്കുന്നത്. ഇതു മലയാളത്തിലേക്ക് മാറ്റിയെഴുതാൻ സഹായിക്കുക 
+ഇത് ഗണിതത്തിലുപയോഗിക്കുന്ന ചിഹ്നങ്ങളുടെ പട്ടികയാണ്. ഓരോ ചിഹ്നങ്ങളും എച്.ടി.എം.എൽ. ഇലും TeX ഇലും കാണിച്ചിരിക്കുന്നു.
+then 
+ℤ+ or ℤ> means {1, 2, 3, ...} .ℤ* or ℤ≥ means {0, 1, 2, 3, ...} .
+Then = {…, −8, −3, 2, 7, …}.
+ is ambiguous: it could be an ordered pair or an open interval. Set theorists and computer scientists often use angle brackets ⟨ ⟩ instead of parentheses.)
+ is ambiguous: it could be an ordered pair or an open interval. The notation ]a,b
+
+Some Unicode charts of mathematical operators:
+Some Unicode cross-references:

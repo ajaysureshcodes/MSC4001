@@ -1,0 +1,1 @@
+./divergence -W -i ../../data/bible/english.txt -1 ../../models/english.model -2 ../../models/german.model

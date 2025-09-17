@@ -1,0 +1,59 @@
+Loading models from file models.dat
+Loading training model from file ../../models/english.model
+Loading training model from file ../../models/french.model
+Loading training model from file ../../models/german.model
+Loading training model from file ../../models/italian.model
+Loading training model from file ../../models/latin.model
+Loading training model from file ../../models/maori.model
+Loading training model from file ../../models/swedish.model
+Loading training model from file ../../models/spanish.model
+Loading data files from file t.dat
+Loading data file from file t1.txt
+ 4.143 English
+ 6.206 French
+ 6.409 German
+ 6.236 Italian
+ 6.007 Latin
+ 5.615 Maori
+ 5.929 Swedish
+ 6.182 Spanish
+The lowest cross-entropy of 4.143 on file with label English is for tag English model named "English model"
+The next lowest cross-entropy of 5.615 is for tag Maori model named "Maori model"
+Loading data file from file t2.txt
+ 6.572 English
+ 6.483 French
+ 6.699 German
+ 5.993 Italian
+ 7.157 Latin
+ 3.502 Maori
+ 5.558 Swedish
+ 6.543 Spanish
+The lowest cross-entropy of 3.502 on file with label Maori is for tag Maori model named "Maori model"
+The next lowest cross-entropy of 5.558 is for tag Swedish model named "Swedish model"
+Loading data file from file t3.txt
+ 6.009 English
+ 6.249 French
+ 4.579 German
+ 5.892 Italian
+ 6.472 Latin
+ 6.357 Maori
+ 5.297 Swedish
+ 6.731 Spanish
+The lowest cross-entropy of 4.579 on file with label German is for tag German model named "German model"
+The next lowest cross-entropy of 5.297 is for tag Swedish model named "Swedish model"
+Loading data file from file t4.txt
+ 5.575 English
+ 4.374 French
+ 6.056 German
+ 5.165 Italian
+ 4.232 Latin
+ 5.730 Maori
+ 4.603 Swedish
+ 4.759 Spanish
+The lowest cross-entropy of 4.232 on file with label Spanish is for tag Latin model named "Latin model"
+The next lowest cross-entropy of 4.374 is for tag French model named "French model"
+
+
+Overall summary:
+Precision at first rank = 0.750
+

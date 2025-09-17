@@ -1,0 +1,20 @@
+Loading models from file models2.dat
+Loading training model from file ../../models/english.model
+Loading data files from file t.dat
+Loading data file from file t1.txt
+ 4.143 English
+The lowest cross-entropy of 4.143 on file with label English is for tag English model named "English model"
+Loading data file from file t2.txt
+ 6.572 English
+The lowest cross-entropy of 6.572 on file with label Maori is for tag English model named "English model"
+Loading data file from file t3.txt
+ 6.009 English
+The lowest cross-entropy of 6.009 on file with label German is for tag English model named "English model"
+Loading data file from file t4.txt
+ 5.575 English
+The lowest cross-entropy of 5.575 on file with label Spanish is for tag English model named "English model"
+
+
+Overall summary:
+Precision at first rank = 0.250
+

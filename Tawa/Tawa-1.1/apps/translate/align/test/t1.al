@@ -1,0 +1,25 @@
+.Score 536870912
+Now
+is
+the
+time
+for
+all
+good
+men
+to
+come
+to
+the
+aid
+of
+their
+party
+When
+will
+they
+ever
+learn
+?
+.EOS
+.EOP

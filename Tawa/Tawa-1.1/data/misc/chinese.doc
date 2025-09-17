@@ -1,0 +1,86 @@
+The files ../../data/misc/chinese.txt and ../../data/demo/segment_Chinese.txt are
+short exerpts (100,000 words and 1,000 symbols, respectively) taken
+(with permission) from Guo Jin's (guojin@hotmail.com) PH_corpus of segmented
+Mandarin Chinese text kindly provided with permission from Chris Brew
+(Chris.Brew@edinburgh.ac.uk) and Julia Hockenmaier (julia@cogsci.ed.ac.uk).
+The full PH_corpus make be obtained from the site ftp.cogsci.ed.ac.uk.
+
+Description of the PH_corpus, and how to get it:
+------------------------------------------------
+
+Subject: 
+       Corpora: Segmented Chinese corpus available again
+   Date: 
+       Tue, 5 Jan 1999 13:13:12 +0100
+  From: 
+       Julia Hockenmaier <julia@cogsci.ed.ac.uk>
+    To: 
+       corpora@hd.uib.no
+    CC: 
+       Chris.Brew@edinburgh.ac.uk
+
+
+
+
+We've put a cleaned up segmented version of Guo Jin's Mandarin Chinese
+PH corpus on the site ftp.cogsci.ed.ac.uk. It can be found in the 
+subdirectory 
+
+pub/chinese. 
+
+We made this version of the corpus as a side effect of our experiments
+on segmentation of Chinese, which are described in [1],[2] and [3].
+
+
+We are grateful to Guo Jin for granting permission to distribute this
+version of the corpus, to the Studienstiftung des deutschen Volkes,
+the Economic and  Social Science Research Council and the Engineering
+and Physical Science Research Council for direct and indirect funding
+of this research, and to the University of Edinburgh's  Division of
+Informatics for providing the ftp site.
+Thanks to the University of Stuttgart's Intitut fuer Maschinelle
+Sprachverarbeitung and the University of Edinburgh's Centre for
+Cognitive Science for the provision of supportive research environments.
+
+The corpus contains 2,447,701 words and 3,753,291 characters, 492,875 of
+which are paragraph delimiters. Segments are separated by newlines. 
+We hope to create an XML version of this corpus, with more explicit
+markup by mid-1999. See Chinese XML Now! ( http://www.ascc.net/xml/)
+for more information on XML encoding of Chinese.
+
+
+The source is news text from the P.R. of China's Xinhua news
+agency which was written between January 1990 and March 1991. 
+The corpus uses the GB encoding for Chinese characters.
+
+Most of our effort went into punctuation marks and
+proper names. For instance, full stops followed by double quotes
+are separated in this version. A few other segmentation inconsistencies 
+have been removed on an ad hoc basis.
+
+
+
+Chris Brew and Julia Hockenmaier
+
+
+
+[1] Hockenmaier J. (1998), 
+        Transformation-based Chinese Word Segmentation,
+        Studienarbeit, 
+        IMS, Universitaet Stuttgart 
+    (revised version of: 
+    Hockenmaier J. 1997, 
+        Rule-Based Word Segmentation, 
+        MSc Dissertation, 
+        Centre for Cognitive Science, University of Edinburgh)
+
+[2] Hockenmaier, J. and Brew, C. (1998a),
+        Error-Driven Learning of Chinese Word Segmentation
+        In J. Guo, K. T. Lua, and J. Xu, editors, 
+        12th Pacific Conference on Language and Information, 
+        pages 218-229, Singapore. 
+        Chinese and Oriental Languages Processing Society.
+ 
+[3] Hockenmaier, J. and Brew, C. (1998a). 
+        Error driven segmentation of chinese. 
+        Journal of Chinese Computing, forthcoming

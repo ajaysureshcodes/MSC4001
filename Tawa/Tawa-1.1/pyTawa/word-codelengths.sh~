@@ -1,0 +1,6 @@
+python3 word-codelengths.py -i ../data/bible/english.txt -m bible.model >jjj
+echo "Using bible tokens model:"
+sort <jjj
+python3 word-codelengths.py -i ../data/bible/english.txt -m bible_types.model >jjj
+echo "Using bible types model:"
+sort <jjj

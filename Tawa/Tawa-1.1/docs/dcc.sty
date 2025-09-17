@@ -1,0 +1,80 @@
+%
+% Format for DCC proceedings
+% Alistair MOffat, December 1991
+%
+%
+% Original settings
+%
+\topmargin -1mm		% to get exactly 22.2mm from top of page ??
+\textwidth 151.5mm		% to get exactly 152.4mm
+\oddsidemargin 5.5mm		% to get left margin of 31.8mm
+\evensidemargin 5.5mm
+\textheight 225mm		% to get exactly 227.4mm
+\baselineskip 13pt
+\advance\textheight by \topskip
+%
+\rightmargin 0 in		% Right margin in lists
+\renewcommand{\@mklab}[1]{#1\hfil}	% Left justify labels in lists
+%
+\def\@maketitle{\newpage \null
+ \begin{center}
+  {\large\bf \@title \par} 		% \Large or \large omitted
+  \vskip 1.5em 
+  {\normalsize \lineskip .5em 
+   \begin{tabular}[t]{c}\@author \end{tabular}\par} 
+  \vskip 1em 
+  {\small \@date} 
+ \end{center}\par 
+ \vskip 1.5em} 
+\def\abstract{\small 
+\quotation 
+\noindent{\sc Abstract:}}
+\def\endabstract{\endquotation}
+%
+% these seem to have this form:
+% \def\section{\@startsection {section}{1}{\z@}{-3.5ex plus -1ex minus 
+%					        - for no para indent
+%						^^^^ space before heading
+%  -.2ex}{1.0ex plus .2ex}{\large\sc}}
+%         - for on the same line
+%         ^^^^ space after a heading
+\def\section{\@startsection {section}{1}{\z@}{-2.5ex plus -1ex minus 
+ -.2ex}{1.1ex plus .2ex}{\large\sc}}
+%
+\def\subsection{\@startsection{subsection}{2}{\z@}{-2.0ex plus -1ex minus 
+ -.2ex}{1.0ex plus .2ex}{\normalsize\sc}}
+%
+\def\subsubsection{\@startsection{subsubsection}{3}{\z@}{-3.25ex
+ plus -1ex minus -.2ex}{0.8ex plus .2ex}{\normalsize\em}}
+%
+\def\paragraph{\@startsection{paragraph}{4}{\z@}{-1.5ex
+ plus -1ex minus -.2ex}{-1em}{\normalsize\em}}
+%
+\newcommand{\eoenv}{\mbox{~~$\diamond$}}
+\newenvironment{defn}%
+  {\trivlist \item[\hskip \labelsep {\bf Definition:}]}{\endtrivlist}
+\newenvironment{example}{\begin{xmpl} \rm}{\eoenv \end{xmpl}}
+  \newtheorem{xmpl}{Example}[section]
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{definition}{Definition}
+\newenvironment{note}%
+  {\trivlist \item[\hskip \labelsep {\em Note\/}]}{\endtrivlist}
+% \newenvironment{remark}%
+%   {\trivlist \item[\hskip \labelsep {\em Remark\/}]}{\endtrivlist}
+\newcommand{\remark}[1]{[[{#1}]]\marginpar{\rule{5mm}{1mm}}}
+\newenvironment{block}%
+  {\trivlist \item[\hskip \labelsep \indent] \begin{tabular}{@{}l}}%
+  {\end{tabular} \endtrivlist}
+\newenvironment{mathblock}{\[\begin{array}{@{}l}}{\end{array}\]}
+\newenvironment{proof}{\noindent%
+ {\bf Proof~}}{\hfill{$\eoenv$}\par\noindent}
+
+\newenvironment{algorithm}%
+  {\begin{list}{}{\setlength{\leftmargin}{20mm}\setlength{\topsep}{5mm}}%
+   \item\begin{minipage}{120mm}\vspace*{-3mm}\par\begin{tabbing}%
+   \qquad \= \qquad \= \qquad \= \qquad \= \qquad \= \qquad \= \kill}%
+  {\end{tabbing}\par\vspace*{-9mm}\end{minipage}\end{list}}

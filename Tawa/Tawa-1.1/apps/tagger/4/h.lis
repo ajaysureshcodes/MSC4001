@@ -1,0 +1,500 @@
+  176  cd ../
+  177  ls
+  178  cd PPM.google
+  179  ls
+  180  more segment1.c
+  181  ls
+  182  grep PPM_codelength_symbol *.h
+  183  ls
+  184  more ident_file.c 
+  185  more model.c
+  186  ls
+  187  cp model.c model.c.bak
+  188  emacs model.c &
+  189  more ~/doc/ascii.txt 
+  190  man is_print
+  191  man isprint
+  192  ls
+  193  make modelmake model
+  194  make modemake model
+  195  make model
+  196  man calloc
+  197  make model
+  198  man isprint
+  199  make model
+  200  man gcc
+  201  make model
+  202  model
+  203  model.exe
+  204  ls
+  205  ./model.exe
+  206  gdb model.exe
+  207  ./model.exe
+  208  make model
+  209  ./model.exe
+  210  make model
+  211  ./model.exe
+  212  make model
+  213  ./model.exe
+  214  make model
+  215  ./model.exe
+  216  ./model.exe | more
+  217  ./model.exe >jjj
+  218  more jjj
+  219  ./model.exe
+  220  gdb model.exe
+  221  cd /cygdrive/d
+  222  ls
+  223  cd gsdl/home/WJT/src/Work/PPM.google/
+  224  ls
+  225  pu
+  226  ls
+  227  rm *stackdump
+  228  ls
+  229  gdb model.exe
+  230  xterm &
+  231  gdb model.exe
+  232  make model
+  233  ./model.exe
+  234  make model
+  235  ./model.exe
+  236  gdb model.exe
+  237  emacs model.c &
+  238  cp test.txt test.txt.1
+  239  emacs test.txt &
+  240  ./model.exe
+  241  emacs model.c &
+  242  cd
+  243  cd /cygdrive/d
+  244  ls
+  245  cd Bill/
+  246  ls
+  247  cd src
+  248  ls
+  249  cd ..
+  250  cd gs
+  251  ls
+  252  cd gsdl
+  253  ls
+  254  cd home/WJT/
+  255  ls
+  256  cd src
+  257  ls
+  258  cd Work/
+  259  ls
+  260  cd PPM.google/
+  261  ls
+  262  ls -ls
+  263  pu
+  264  ls *.exe
+  265  ./model.exe
+  266  ldld
+  267  ls
+  268  more Makefile 
+  269  more model.c
+  270  ./molde
+  271  time ./model.exe
+  272  man time
+  273  ls -ls test.txt 
+  274  more model.
+  275  more model.c
+  276  xcalc &
+  277  cd ..
+  278  ls
+  279  cd TMT
+  280  ls
+  281  cd TMT-0.08
+  282  ls
+  283  cd samples/
+  284  ls
+  285  cd tagger
+  286  ls
+  287  more Doc.1
+  288  ls 4
+  289  ls */*tagger*
+  290  cd 4
+  291  ls -ls
+  292  ls *dump
+  293  ls -ls *dump
+  294  rm *dump
+  295  ls
+  296  tag -x
+  297  ./tag.exe -x
+  298  ls
+  299  more s.model
+  300  more sss
+  301  ls
+  302  more s
+  303  more s.27
+  304  ls
+  305  more j.lis
+  306  ls
+  307  more j.text
+  308  ls
+  309  more j.text.1
+  310  ls
+  311  more s.text
+  312  ls
+  313  more j.lis
+  314  ls
+  315  more jjj
+  316  tag -x
+  317  ./tag.exe -x
+  318  ./tag.exe -i jjj -m j.model -o j.tagged -p 1
+  319  ./tag.exe -i jjj -m j.model -o j.tagged -p 1 -d 3
+  320  ls
+  321  more jjj.lis
+  322  more jjj.lis.1
+  323  ls
+  324  more jjj
+  325  more jjj.1
+  326  ./tag.exe -i jjj.1 -m j.model -o j.tagged -p 1 -d 3
+  327  ./tag.exe -i jjj.1 -m j.model -o j.tagged -p 1
+  328  wc jjj.1
+  329  more j.tagged
+  330  more j.lis
+  331  cp jjj.1 jjj.2
+  332  emacs jjj.2 &
+  333  ./tag.exe -i jjj.2 -m j.model -o j.tagged -p 1
+  334  gdb ./tag.exe
+  335  ls
+  336  pu
+  337  cd ../../
+  338  cd ..
+  339  cd TMT
+  340  ls
+  341  more Makefile
+  342  make install
+  343  rm *.o
+  344  ls
+  345  make install
+  346  pwd
+  347  cd ../samples/tagger/
+  348  ls
+  349  cd 4
+  350  ls
+  351  rm tag.exe
+  352  make tag
+  353  ls
+  354  ./tag.exe -i jjj.2 -m j.model -o j.tagged -p 1
+  355  pwd
+  356  ./tag.exe -i jjj.2 -m s.model -o j.tagged -p 1
+  357  ls
+  358  make train_tag
+  359  make train_tag.exe
+  360  rm train_tag.exe
+  361  make train_tag
+  362  ls
+  363  emacs train_tag.sh &
+  364  ./train_tag -x
+  365  more j.lis
+  366  ls
+  367  more j.text
+  368  ./train_tag -x
+  369  ./train_tag -i j.text -o j.model -t j.tagslist
+  370  ./train_tag -i s.text -o s.model -t s.tagslist
+  371  gdb ./train_tag.exe
+  372  xterm &
+  373  cd ../..
+  374  cd ../TMT
+  375  emacs model.h
+  376  grep fwrite_int *.c
+  377  grep INT_SIZE *.h
+  378  make install
+  379  cd ../samples/test
+  380  ls
+  381  more test_index.c
+  382  cp test_index.c test_list.c
+  383  make test_list
+  384  test_list
+  385  ./test_list
+  386  ./test_list.exe
+  387  make test_list
+  388  ./test_list.exe
+  389  gdb ./test_list
+  390  grep init_file *.c
+  391  make test_list
+  392  ./test_list.exe
+  393  cd ../../TMT/
+  394  make install
+  395  cd ../samples/test
+  396  make test_list
+  397  rm test_list.
+  398  rm test_list.wz
+  399  rm test_list.exe
+  400  make test_list
+  401  ./test_list.exe
+  402  gdb ./test_list
+  403  xterm &
+  404  rm test_list.exe
+  405  make test_list.
+  406  make test_list
+  407  ./test_list.exe
+  408  pwd
+  409  ./test_list.exe
+  410  gdb ./test_list
+  411  rm test_list.exe
+  412  make test_list
+  413  ./test_list.exe
+  414  rm test_list.exe
+  415  make test_list
+  416  ./test_list.exe
+  417  gdb ./test_list
+  418  cd ../samples/test/
+  419  gdb ./test_list
+  420  rm test_list.exe
+  421  make test_list
+  422  ./test_list.exe
+  423  gdb ./test_list.
+  424  gdb ./test_list
+  425  rm test_list.exe
+  426  make test_list
+  427  gdb ./test_list
+  428  xtterm &
+  429  xterm &
+  430  make install
+  431  ps -fu wjt
+  432  kill -9 3740
+  433  ps -fu wjt
+  434  kill -9 3740
+  435  ps -fu wjt
+  436  cd ../samples/tagger/4
+  437  tag -x
+  438  ./tag -x
+  439  more jjj.1
+  440  more jjj.2
+  441  ./tag -x
+  442  ./tag -m s.model -i jjj.2 -o jjj.out -p 1
+  443  gdb ./tag
+  444  rm tag.exe
+  445  ls -ls tag.exe
+  446  rm tag.exe
+  447  ls -ls
+  448  rm *dump
+  449  rm tag.exe
+  450  ls
+  451  cd ..
+  452  cd 4
+  453  ls
+  454  rm tag.exe
+  455  rm ./tag.exe
+  456  chmod o+w tag.exe
+  457  rm ./tag.exe
+  458  ls -ls tag.exe
+  459  chmod +w tag.exe
+  460  rm ./tag.exe
+  461  cd src/Work/TMT/TMT-0.08/TMT
+  462  xterm &
+  463  xls
+  464  ls
+  465  more pgg.h
+  466  ls
+  467  emacs tag_model.c &
+  468  grep write_num *.c
+  469  grep write_int *.c
+  470  grep fread_int *.v
+  471  grep fread_int *.c
+  472  grep read_list list.c
+  473  grep load_list list.c
+  474  make install
+  475  xterm &
+  476  emacs tag_model.c &
+  477  make install
+  478  grep model_form *.c
+  479  make install
+  480  cd 
+  481  cd /cygdrive/d
+  482  cd Bill/Teaching/
+  483  ls
+  484  cd ICP2051
+  485  ls
+  486  cd Labs
+  487  ls
+  488  mkdir Python\ Labs
+  489  ls
+  490  cd Python\ Labs/
+  491  ls
+  492  cat >test.html
+  493  cat /cygdrive/m/pythin.lis
+  494  cat /cygdrive/m/python.lis
+  495  ls /cygdrive/m/*.lis
+  496  ls /cygdrive/d
+  497  ls /cygdrive/m
+  498  ls /cygdrive
+  499  cd /cygdrive/m
+  500  cat python.lis
+  501  rm train_tag
+  502  rm train_tag.exe
+  503  make train_tag.exe
+  504  make train_tag
+  505  train_tag -x
+  506  train_tag.exe -x
+  507  ./train_tag -x
+  508  more s.text
+  509  ls
+  510  more s.text.1
+  511  ls
+  512  more s
+  513  ls
+  514  ./train_tag -x
+  515  ls
+  516  ls -ls j.text
+  517  ls -ls s.text
+  518  ls
+  519  ls -ls s.text.1
+  520  ./train_tag -x
+  521  ./train_tag -i s.text -t s.tags -T "test" -p 10000 -o s.model
+  522  rm tag.exe
+  523  make tag
+  524  ./tag -x
+  525  more jjj.2
+  526  ./tag -m s.model -i jjj.2 -o jjj.out -p 1
+  527  ./tag -m s.model -i jjj.2 -o jjj.out -p 1 >&jjj.lis
+  528  more jjj.lis
+  529  rm tag.exe
+  530  make tag
+  531  rm train_tag.exe
+  532  h
+  533  ./train_tag -i s.text -t s.tags -T "test" -p 10000 -o s.model
+  534  ./train_tag.exe -i s.text -t s.tags -T "test" -p 10000 -o s.model
+  535  make train_tag
+  536  ./train_tag.exe -i s.text -t s.tags -T "test" -p 10000 -o s.model
+  537  h
+  538  ./tag -m s.model -i jjj.2 -o jjj.out -p 1 >&jjj.lis
+  539  more jjj.list
+  540  more jjj.lis
+  541  tail s.lis
+  542  tail jjj.lis
+  543  more jjj.out
+  544  xterm &
+  545  more jjj.lis
+  546  ./tag -m s.model -i jjj.2 -o jjj.out -p 1
+  547  grep "tags symbol" *.c
+  548  make tag
+  549  rm tag.exe
+  550  make tag
+  551  ./tag -m s.model -i jjj.2 -o jjj.out -p 1
+  552  more jjj.out
+  553  ./tag -m s.model -i jjj.2 -o jjj.out -p 1
+  554  make tag
+  555  ./tag -m s.model -i jjj.2 -o jjj.out -p 1
+  556  make tag
+  557  ./tag -m s.model -i jjj.2 -o jjj.out -p 1
+  558  grep "got word" *.c
+  559  grep "Got word" *.c
+  560  make tag
+  561  ./tag -m s.model -i jjj.2 -o jjj.out -p 1
+  562  more jjj.out
+  563  ./tag -m s.model -i jjj.2 -o jjj.out -p 1 >&jjj.lis
+  564  more jjj.lis
+  565  make tag
+  566  ./tag -m s.model -i jjj.2 -o jjj.out -p 1 >&jjj.lis
+  567  more jjj.lis
+  568  gdb ./tag
+  569  rm tag.exe
+  570  make tag
+  571  ./tag -m s.model -i jjj.2 -o jjj.out -p 1 >&jjj.lis
+  572  more jjj.lis
+  573  rm train_tag.exe
+  574  rm tag.exe
+  575  make train_tag, tag
+  576  make train_tag tag
+  577  ls
+  578  h
+  579  ./train_tag -x
+  580  ./train_tag -i s.text -o s.model -t s.tags -T "test" -p 10000 >&jjj.lis.1 &
+  581  tail jjj.lis.1
+  582  more jjj.lis.1
+  583  emacs jjj.lis &
+  584  rm train_tag.exe tag.exe
+  585  make train_tag tag
+  586  ./train_tag -i s.text -o s.model -t s.tags -T "test" -p 10000
+  587  pwd
+  588  make tag
+  589  h
+  590  ./tag -m s.model -i jjj.2 -o jjj.out -p 1 >&jjj.lis
+  591  more jjj.lis
+  592   more jjj.lis.1
+  593  more jjj.lis
+  594  more jjj.lis.1
+  595  more jjj.lis
+  596  emacs jjj.lis.1
+  597  more jjj.out
+  598  more jjj.lis
+  599  more s.tags
+  600  wc s.tags
+  601  wc s.tagslist
+  602  h
+  603  ./train_tag -i s.text -o s.model -t s.tagslist -T "test" -p 10000
+  604  more s.tagslist
+  605  cp s.tagslist sss
+  606  emacs sss
+  607  awk '{ a [$1]++; } END { for (i in a) print i " " a[i]; }'
+  608  awk '{ a [$1]++; } END { for (i in a) print i " " a[i]; }' sss
+  609  make tag
+  610  rm tag.exe
+  611  make tag
+  612  make tag | more
+  613  make tag >ttt
+  614  make tag >&ttt
+  615  nore ttt
+  616  more ttt
+  617  make tag
+  618  h
+  619  tag -x
+  620  ./tag -x
+  621  ./tag -i jjj.1 -o jjj.out -m s.model -p 1
+  622  rm tag.exe
+  623  make tag
+  624  ./tag -i jjj.1 -o jjj.out -m s.model -p 1
+  625  ./tag -i jjj.1 -o jjj.out -m s.model -p 1 >&jjj.lis
+  626  more jjj.lis
+  627  tail jjj.lis
+  628  more jjj.1
+  629  rm tag.exe
+  630  make tag.exe
+  631  make tag
+  632* ./tag -i jjj.1 -o jjj.out -m s.model -p 1
+  633  more jjj.lis
+  634  more jjj.out
+  635  more s.text
+  636  ls
+  637  h
+  638  ls
+  639  ls *
+  640  ls jjj.*
+  641  ls -ls jjj.*
+  642  more jjj.out.1
+  643  rm jjj.out.1
+  644  ls -ls jjj.*
+  645  ls *.text
+  646  ls -ls *.text
+  647  more eee.text
+  648  ls
+  649  h
+  650  ./tag -i eee.text -o eee.out -m s.model -p 1
+  651  more eee.out
+  652  ./tag -i eee.text -o eee.out -m s.model -p 1000
+  653  more eee.out
+  654  ls *.texe
+  655  ls *.text
+  656  ls -ls *.text
+  657  more j.text
+  658  ls *.text
+  659  ls -ls *.text
+  660  more s.text
+  661  awk '{ if ((NR % 2) == 0) print $0; }' s.text
+  662  ls s.*
+  663  more s.text.1
+  664  awk '{ if ((NR % 2) == 0) print $0; }' s.text >s.text.words
+  665  move s.text.words s.words
+  666  mv s.text.words s.words
+  667  more s.words
+  668  tail s.words
+  669  ls
+  670  rm *dump
+  671  ./tag -i s.words -o s.out -m s.model -p 1000
+  672  ./tag -i eee.text -o eee.out -m s.model -p 1000
+  673  ls
+  674  h
+  675  h >h,lis

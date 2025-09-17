@@ -1,0 +1,55 @@
+============================================================
+COMPRESSION-BASED SEGMENTATION ANALYSIS REPORT
+============================================================
+
+Total experiments: 4
+Successful experiments: 4
+
+
+MALAYALAM NATIVE WITH OWN MODEL:
+----------------------------------------
+Best spacing pattern: original
+  Bits per char: 1.310
+  Compression ratio: 6.11x
+Worst spacing pattern: char_spacing
+  Bits per char: 3.953
+  Compression ratio: 2.02x
+✓ Model shows good word boundary understanding
+
+MALAYALAM TRANSLITERATED WITH OWN MODEL:
+----------------------------------------
+Best spacing pattern: original
+  Bits per char: 1.477
+  Compression ratio: 5.42x
+Worst spacing pattern: char_spacing
+  Bits per char: 5.733
+  Compression ratio: 1.40x
+✓ Model shows good word boundary understanding
+
+MALAYALAM NATIVE WITH MALAYALAM TRANSLITERATED MODEL:
+----------------------------------------
+Best spacing pattern: char_spacing
+  Bits per char: 7.439
+  Compression ratio: 1.08x
+Worst spacing pattern: no_spaces
+  Bits per char: 7.649
+  Compression ratio: 1.05x
+⚠ Model may be over-fitting to character patterns
+
+MALAYALAM TRANSLITERATED WITH MALAYALAM NATIVE MODEL:
+----------------------------------------
+Best spacing pattern: char_spacing
+  Bits per char: 12.704
+  Compression ratio: 0.63x
+Worst spacing pattern: no_spaces
+  Bits per char: 16.394
+  Compression ratio: 0.49x
+⚠ Model may be over-fitting to character patterns
+
+
+KEY FINDINGS:
+----------------------------------------
+• Both Malayalam native and transliterated models analyzed
+• Cross-model comparisons performed
+• Lower bits-per-character indicates better compression
+• Models that prefer original spacing show better word boundary understanding

@@ -1,0 +1,7 @@
+
+തന്മാത്രകളിൽ ആറ്റങ്ങൾ വിന്യസിച്ചിരിക്കുന്നതിന്റെ ത്രിമാനരീതിയെയാണ് തന്മാത്രാ ജ്യോമെട്രി എന്നതുകൊണ്ട് വിവക്ഷിക്കുന്നത്. ഇതിൽ തന്മാത്രയുടെ രൂപത്തിനുപുറമേ ആറ്റങ്ങൾ തമ്മിലുള്ള ബന്ധത്തിന്റെ നീളം, ബന്ധത്തിന്റെ കോണളവ് തുടങ്ങി ഓരോ ആറ്റത്തിന്റെയും സ്ഥാനം നിർവ്വചിക്കാൻ ഉതകുന്ന അളവുകൾ ഉൾപ്പെട്ടിരിക്കും.
+തന്മാത്രാ ജ്യോമെട്രിയുടെ രീതി അനുസരിച്ചാവും പദാർത്ഥങ്ങളുടെ പ്രതിപ്രവർത്തനരീതി, പൊളാരിറ്റി, പദാർത്ഥത്തിന്റെ അവസ്ഥ, നിറം, കാന്തികത, ജീവശാസ്ത്രപരമായ പ്രവർത്തനം എന്നിവയെല്ലാം ഉണ്ടാവുന്നത്. The angles between bonds that an atom forms depend only weakly on the rest of molecule, i.e. they can be understood as approximately local and hence transferable properties.
+A bond angle is the geometric angle between two adjacent bonds. Some common shapes of simple molecules include:
+The bond angles in the table below are ideal angles from the simple VSEPR theory, followed by the actual angle for the example given in the following column where this differs. For many cases, such as trigonal pyramidal and bent, the actual angle for the example differs from the ideal angle, and examples differ by different amounts. For example, the angle in H2S differs from the tetrahedral angle by much more than the angle for H2O does.
+The greater the amount of lone pairs contained in a molecule the smaller the angles between the atoms of that molecule. The VSEPR theory predicts that lone pairs repel each other, thus pushing the different atoms away from them.ഇവയും കാണുക==
+

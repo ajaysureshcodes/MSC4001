@@ -1,0 +1,207 @@
+Article group:
+t: AT
+g: AT
+Article group:
+t: ATI
+g: AT
+Noun group:
+t: NN
+g: NN
+Noun group:
+t: NNP
+g: NN
+Noun group:
+t: NNPS
+g: NN
+Noun group:
+t: NNPS_
+g: NN
+Noun group:
+t: NNP_
+g: NN
+Noun group:
+t: NNS
+g: NN
+Noun group:
+t: NNS_
+g: NN
+Noun group:
+t: NNS_DQ
+g: NN
+Noun group:
+t: NNU
+g: NN
+Noun group:
+t: NNUS
+g: NN
+Noun group:
+t: NNU_DQ
+g: NN
+Noun group:
+t: NN_
+g: NN
+Noun group:
+t: NN_DQ
+g: NN
+Proper Noun group:
+t: NP
+g: NP
+Proper Noun group:
+t: NPL
+g: NP
+Proper Noun group:
+t: NPLS
+g: NP
+Proper Noun group:
+t: NPLS_
+g: NP
+Proper Noun group:
+t: NPL_
+g: NP
+Proper Noun group:
+t: NPS
+g: NP
+Proper Noun group:
+t: NPS_
+g: NP
+Proper Noun group:
+t: NPT
+g: NP
+Proper Noun group:
+t: NPTS
+g: NP
+Proper Noun group:
+t: NPTS_
+g: NP
+Proper Noun group:
+t: NPT_
+g: NP
+Proper Noun group:
+t: NPT_DQ
+g: NP
+Proper Noun group:
+t: NP_
+g: NP
+Proper Noun group:
+t: NR
+g: NP
+Proper Noun group:
+t: NRS
+g: NP
+Proper Noun group:
+t: NR_
+g: NP
+Determiner group:
+t: ABL
+g: DT
+Determiner group:
+t: ABN
+g: DT
+Determiner group:
+t: ABX
+g: DT
+Determiner group:
+t: AP
+g: DT
+Determiner group:
+t: APS
+g: DT
+Determiner group:
+t: APS_
+g: DT
+Determiner group:
+t: AP_
+g: DT
+Determiner group:
+t: AP_DQ
+g: DT
+Determiner group:
+t: DT
+g: DT
+Determiner group:
+t: DTI
+g: DT
+Determiner group:
+t: DTS
+g: DT
+Determiner group:
+t: DTX
+g: DT
+Determiner group:
+t: DT_
+g: DT
+Adjective group:
+t: JJ
+g: JJ
+Adjective group:
+t: JJB
+g: JJ
+Adjective group:
+t: JJB_DQ
+g: JJ
+Adjective group:
+t: JJR
+g: JJ
+Adjective group:
+t: JJR_DQ
+g: JJ
+Adjective group:
+t: JJT
+g: JJ
+Adjective group:
+t: JJT_DQ
+g: JJ
+Adjective group:
+t: JJ_DQ
+g: JJ
+Adjective group:
+t: JNP
+g: JJ
+Intermediate NP chunk:
+g: AT
+c: INP
+Intermediate NP chunk:
+g: AT g: JJ
+c: INP
+Intermediate NP chunk:
+c: INP g: JJ
+c: INP1
+NP chunk:
+c: INP1 g: NN
+c: CNP
+NP chunk:
+c: INP1 g: NP
+c: CNP
+NP chunk:
+c: CNP g: NN
+c: CNP
+NP chunk:
+c: CNP g: NP
+c: CNP
+NP chunk:
+g: AT g: NN
+c: CNP
+NP chunk:
+g: AT g: NP
+c: CNP
+Intermediate NP chunk:
+g: JJ
+c: INP
+Intermediate NP chunk:
+g: JJ g: JJ
+c: INP
+NP chunk:
+g: JJ g: NN
+c: CNP
+NP chunk:
+g: JJ g: NP
+c: CNP
+NP chunk:
+c: INP1 g: NP
+c: CNP
+Noun chunk:
+g: NN
+c: CNoun
+Proper Noun chunk:
+g: NP
+c: CPNoun

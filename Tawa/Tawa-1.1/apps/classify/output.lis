@@ -1,0 +1,59 @@
+Loading models from file models.dat
+Loading training model from file ../../models/english.model
+Loading training model from file ../../models/french.model
+Loading training model from file ../../models/german.model
+Loading training model from file ../../models/italian.model
+Loading training model from file ../../models/latin.model
+Loading training model from file ../../models/maori.model
+Loading training model from file ../../models/swedish.model
+Loading training model from file ../../models/spanish.model
+Loading data files from file testfiles.dat
+Loading data file from file t1.txt
+286.698 English
+438.991 French
+450.035 German
+433.301 Italian
+445.050 Latin
+440.497 Maori
+396.157 Swedish
+431.508 Spanish
+The lowest codelength of 286.698 on file with label English is for tag English model named "English model"
+The next lowest codelength of 396.157 is for tag Swedish model named "Swedish model"
+Loading data file from file t2.txt
+235.521 English
+236.697 French
+241.235 German
+233.845 Italian
+255.707 Latin
+147.970 Maori
+199.657 Swedish
+270.366 Spanish
+The lowest codelength of 147.970 on file with label Maori is for tag Maori model named "Maori model"
+The next lowest codelength of 199.657 is for tag Swedish model named "Swedish model"
+Loading data file from file t3.txt
+102.642 English
+108.891 French
+77.903 German
+99.773 Italian
+115.512 Latin
+110.624 Maori
+83.375 Swedish
+107.631 Spanish
+The lowest codelength of 77.903 on file with label German is for tag German model named "German model"
+The next lowest codelength of 83.375 is for tag Swedish model named "Swedish model"
+Loading data file from file t4.txt
+269.111 English
+240.469 French
+296.536 German
+244.674 Italian
+191.834 Latin
+296.608 Maori
+225.909 Swedish
+287.478 Spanish
+The lowest codelength of 191.834 on file with label Latin is for tag Latin model named "Latin model"
+The next lowest codelength of 225.909 is for tag Swedish model named "Swedish model"
+
+
+Overall summary:
+Precision at first rank = 1.000
+

@@ -1,0 +1,10 @@
+{{Infobox officeholder
+|honorific-prefix  = പ്രൊ, ഡോ.
+|name        = ഝാൻസി ജെയിംസ്
+|image       = James Jancy.jpg
+|imagesize     =
+|smallimage     = 
+|alt        =
+|caption      =
+|order       =
+|office       = 

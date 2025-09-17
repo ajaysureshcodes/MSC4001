@@ -1,0 +1,8 @@
+ആവർത്തനപ്പട്ടികയിലെ പതിനാറാമത്തെ ഗ്രൂപ്പ് ആണ് ഓക്സിജൻ കുടുംബം.ഓക്സിജൻ, സൾഫർ, സെലിനിയം, ടെല്ലൂറിയം, പൊളോണിയം എന്നീ മൂലകങ്ങളാണ് ഈ ഗ്രൂപ്പിൽ ഉൾപ്പെട്ടിരിക്കുന്നത്.
+
+Oxygen O Atomic Number: 8 Atomic Weight: 15.9994 Melting Point: 50.5 KBoiling Point: 90.20 KSpecific mass: 0.001429 g/cm3 Electronegativity: 3.04
+Sulfur S Atomic Number: 16 Atomic Weight: 32.065 Melting Point: 388.51 K Boiling Point: 717.8 KSpecific mass: 2.067 g/cm3 Electronegativity: 2.58
+Selenium Se Atomic Number: 34 Atomic Weight: 78.96 Melting Point: 494.15 K Boiling Point: 958 KSpecific mass: 4.809 g/cm3 Electronegativity: 2.55
+Tellurium Te Atomic Number: 52 Atomic Weight: 127.60 Melting Point: 722.8 K Boiling Point: 1261 KSpecific mass: 6.232 g/cm3 Electronegativity: 2.1
+Polonium Po Atomic Number: 84 Atomic Weight:  Melting Point: 527.15 K Boiling Point: 1235 KSpecific mass: 9.32 g/cm3 Electronegativity: 2
+Livermorium Lv Atomic Number: 116 Atomic Weight:  Melting Point: ? K Boiling Point: ? K Specific mass: ? 12.9 g/cm3 Electronegativity: ?

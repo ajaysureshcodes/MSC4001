@@ -1,0 +1,1695 @@
+\documentclass[11pt]{article}
+\usepackage{dcc,url}
+\usepackage{epsfig,subfigure}
+
+\renewcommand{\topfraction}{0.85}
+\renewcommand{\textfraction}{0.15}
+\setcounter{topnumber}{6}
+\setcounter{totalnumber}{8}
+
+\newcommand{\boxedscaledfig}[2]{\fbox{\epsfxsize=#1\epsfbox{#2}}}
+\newcommand{\scaledfig}[2]{\epsfxsize=#1\epsfbox{#2}}
+\newcommand{\epsfigold}[2]{\epsfysize=#1\epsfbox{#2}}
+
+\begin{document}
+
+%\baselineskip 11pt
+
+\title{An Improved Interface for Probabilistic Models of Text}
+\author{W.~J.~Teahan \\
+        Research Fellow, Information Retrieval Group \\
+        School of Computing and Mathematical Sciences, \\
+        Robert Gordon University, Aberdeen, Scotland\thanks{The author would
+        like to acknowledge the generous support of the Information Technology
+        Department at Lund University, Sweden where much of the work described
+        in this paper was undertaken from January to September, 1999.}\\
+     {\em wjt@scms.rgu.ac.uk}
+}
+\maketitle
+
+\begin{abstract}
+Recently, an Application Program Interface (API) has been defined
+for modelling sequential text (Cleary \& Teahan, 1999). The intention of the API
+was to shield the user from details of the modelling and probability
+estimation process, with the primary motivation being to simplify the design of
+applications where the use of textual models is needed, such as
+data compression, spelling correction or segmentation of text by
+inserting spaces.
+
+This paper describes modifications to the API that simplifies the interface both from
+a user's perspective and from an implementation point of view. Some further routines
+have also been added where this has been felt necessary.
+The API has also been extended to include a new class of models, called
+{\em markup} models. The extended interface substantially simplifies the
+implementation of a wide range of correction-based applications such as OCR
+spelling correction and word segmentation.
+
+\end{abstract}
+
+\section{Introduction}
+
+\label{section.introduction}
+
+Recently, an Application Program Interface (API) has been defined
+for modelling sequential text (Cleary and Teahan, 1999). The intention of the API
+was to shield the user from details of the modelling and probability
+estimation process, with the primary motivation being to simplify the design of
+applications where the use of textual models is needed, such as
+data compression, spelling correction or segmentation of text by
+inserting spaces.
+
+Predictive models can be used for a number of applications.
+For example, the problem of ascribing a particular language or
+style (such as American or British English) to a piece of text can be solved
+as follows (Teahan, 1998). Construct separate models of American and British
+text and then compute how well the test text is compressed using these
+models. The text is ascribed to the same genre as the model which compresses
+it better. This technique can also be used for authorship ascription and
+other related problems. Another application is to help with cracking
+ciphers. Thus if a good model is available of the text which has been
+encrypted, then the search space for a brute force attack on a code can be
+significantly reduced (Irvine, 1997).
+
+The problem considered by Cleary \& Teahan (1999) was how to permit
+code for different models and the actual trained models themselves to be
+interchanged easily between users.
+Users of the models do not want to be concerned about the details either of
+the implementation of the models or how they were trained and the sources of
+the training text. 
+The fundamental ideas they put forward is that it should be
+possible to write application programs independent of the details of
+particular modelling code, that it should be possible to implement different
+modelling code independent of the various applications, and that it should be
+possible to easily exchange different pre-trained models between users. It
+was hoped that this independence would foster the exchange and use of high
+performance modelling code; the construction of sophisticated adaptive
+systems based on the best available models; and the proliferation and
+provision of high quality models of standard text types such as English or
+other natural languages; and easy comparison of different modelling
+techniques.
+
+The solution they proposed was that of a standard Application Programming
+Interface (API) for data compression programs. The API isolates applications
+and modelling code from each other by providing a standard way to access the
+needed information. To meet these high level aims the API,
+they noted that it should support the following goals:
+
+\begin{enumerate}
+\item  isolation of the application from details of the model implementation;
+
+\item  isolation of the model code from details of the various applications;
+
+\item  as wide a possible range of modelling algorithms;
+
+\item  simple implementation of as wide a possible range of applications;
+
+\item  trade-offs in the modelling code between space consumption, execution
+time and accuracy of predictions;
+
+\item  models which achieve performance at the highest levels possible;
+
+\item  efficient implementation both of models and applications;
+
+\item  the ability to load and restore models to and from disk;
+
+\item  multiple models in use simultaneously.
+\end{enumerate}
+
+Cleary \& Teahan built an implementation of the API based on the PPM text compression
+scheme (Cleary \& Witten, 1984; Moffat, 1990; Cleary \& Teahan, 1997) using order 5 models.
+ 
+This paper describes modifications to the original API specification that simplifies
+the interface both from
+a user's perspective and from an implementation point of view. Some further routines
+have also been added where this has been felt necessary.
+The API has also been extended to include a new class of models, called
+{\em markup} models. The extended interface substantially simplifies the
+implementation of a wide range of correction-based applications such as OCR
+spelling correction and word segmentation.
+
+This paper is organized as follows.
+The next section gives a brief overview of the abstract data structures used by the API. 
+Section~\ref{section.whats-new} describes the changes that have been made to the API,
+and lists all the routines that have either been added, removed or modified.
+The new specification can be found in Appendix A.
+Section~\ref{section.extensions} then describes the two main extensions to the API---the first consists of
+routines for creating, comparing and modifying text records (i.e. strings of
+symbols), and the second describes routines for creating and using the new class
+of markup models. The specification of these routines can be found
+in Appendices B and C. The paper concludes with some sample
+C source code for six applications, and a brief look at where future work
+on the API might proceed.
+
+\section{An overview of the API}
+
+The fundamental idea in the API is a {\em model}. Each model is self-contained and
+provides predictions for a sequence of symbols. All models in the API are
+referred to indirectly via either an integer \emph{model number} or a context
+record (see below). The API manages the model numbers internally. It allocates them when a model
+is loaded or created and de-allocates them when a model is released.
+
+One distinction that is made in the API is between static and dynamic
+models. A static model cannot have its internal model updated while a
+dynamic model is updated as each symbol of the text is scanned. The main
+reason for this distinction is a matter of efficiency. It is possible to
+implement static models significantly more efficiently than dynamic models.
+There are two reasons for this. One is that the code can be simpler and less
+information needs to be carried in temporary data structures to access the
+model. However, the most important reason is that it is possible to make
+large savings in space. This can be done by compressing the data structure
+(by removing some pointers, and by using smaller counts, pointers, and
+symbol sizes) and by \emph{pruning} the model (Bunton, 1996).
+That is, removing conditioning contexts that contribute little to the
+overall prediction can dramatically reduce the size of the model while not
+reducing the predictive performance very much (in fact, in some cases the
+predictive performance has been reported to improve).
+
+The API allows empty dynamic models to be created. The transition to a
+static model occurs at the point when the model is written to disk. This can
+be done in two ways---either as a dynamic model or as a static model. Thus
+pruned static models can be used both to save memory during execution and to
+save memory on disk. The latter use is particularly important if models are
+to be broadcast to the world.
+
+The most common way of gaining access to a model is via a \emph{context
+record}. Almost all manipulation and usage of a model is via one of these
+records. There can be many context records all referring to (different parts
+of) a model at the same time. The context record provides a reference to a
+conditioning context within a model and is ``stepped along'' as new symbols
+are scanned from a symbol sequence. The context record maintains and
+provides access to the following information within a model:
+
+\begin{itemize}
+\item  \emph{current position} --- a reference to a conditioning context within
+the model;
+
+\item  \emph{current symbol} --- a reference to a symbol that is predicted by
+the current position;
+
+\item  \emph{current probability} --- a reference to a probability within the
+list of probabilities associated with the current symbol;
+\end{itemize}
+
+The current symbol forms part of a sequence of symbols predicted by the
+current position. This sequence is ordered (although the ordering is
+implementation dependent and will vary depending on the current position and
+even between different times for the same current position). Procedures are
+provided either for stepping through this sequence so that all the predicted
+symbols can be accessed, for going directly to some known predicted symbol,
+and for updating the current position by stepping
+along to the next symbol in the sequence once the correct predicted symbol has been located.
+Since many applications use models to compute the cost of encoding some known text,
+procedures are also provided that compute the cost of encoding the symbols
+(i.e. the negative log of the product of the probabilities in units of bits).
+
+\section{What's different}
+\label{section.whats-new}
+
+This section details the modifications that have been made to the API.
+The first four sections describes the four major changes
+that have been made---firstly, the addition of a new object, called a {\em coder}
+for specifying the arithmetic coder; secondly, the use of ``concurrent''
+updating; thirdly, the extension to allow for alphabets of unbounded size; and
+lastly, the creation of a special ``sentinel'' symbol.
+
+The last three sub-sections list the modifications that have been made to the
+API specification itself, detailing the routines that have been added, removed
+or modified.
+
+\subsection{Coders}
+
+In the specification of the old API, it was noted that ``the  
+issue of how to return the probabilistic predictions made by a model is
+unexpectedly vexed.'' The solution put forward was to return the predictions
+as a probability list---a list of three integers specifying the arithmetic
+coding range as a lower and upper probability bound together
+with a single integer numerator total.
+
+This solution was less than satisfactory, for the following reasons:
+
+\begin{enumerate}
+\item Substantial storage overhead was required to keep track of the
+      cumulative counts for the probability lists for the correct operation
+      of routines such as \verb|SMI_next_symbol|.
+\item Encoding and decoding operations were slower because
+      they had the extra overhead of maintaining the probability lists.
+\item There was also no way during decoding to take advantage of faster
+      search methods (such as binary search trees) during operation of the
+      search routine \verb|SMI_find_symbol|.
+\item From a user point of view, the interface was less than satisfactory, being
+      unintuitive and needlessly complicated.
+\end{enumerate}
+
+The solution proposed in this specification is to remove probability lists
+altogether from the API. This is achieved by the use of a new object, called a {\em coder},
+which allows the user to explicitly specify the arithmetic coding
+routines to be used for encoding and decoding. 
+A coder is defined using the routine \verb|TLM_create_coder| which returns
+a coder number as a pointer to a coder record. The API manages the coder
+numbers internally. It allocates them when a coder is created
+and de-allocates them when a coder is released.
+
+The routine \verb|TLM_create_coder| takes four arguments: the
+maximum frequency allowed; and pointers to three routines that are required for encoding
+and decoding---\verb|arithmetic_encode| and \verb|arithmetic_decode| both take three unsigned integers
+as arguments that specify the current arithmetic coding range (low, high
+and total), whereas \verb|arithmetic_decode_target| takes just a single unsigned integer
+as an argument, the total of the current coding range.
+(This coding interface was first proposed by Moffat, Neal, and Witten (1995) for their
+arithmetic coding implementation).
+
+Two new routines, \verb|TLM_encode_symbol| and
+\verb|TLM_decode_symbol| have been added to the API to allow the user to explicitly perform
+the encoding and decoding operations for a given context and coder. Since the arithmetic coding functions
+are specified in the coder record passed to these routines, the user no longer needs to know
+what probabilities are actually being coded. The coding operations are done internally; thus, the user
+is completely shielded from the implementation details of probability counts, scaling and the like.
+
+Many applications do, however, require access to the probability predictions for a given
+context. This is achieved in the new API by modifying the operation of the
+existing routines \verb|TLM_next_symbol| and \verb|TLM_find_symbol|, and providing an
+additional routine \verb|TLM_update_codelength|. These routines
+return a {\em codelength}, a real value (float) which is set to the cost of encoding the
+current context symbol. One slight drawback with this approach is that a double search cost
+is incurred for certain applications which require a scan through the probability distribution prior
+to encoding and decoding. For example, \verb|TLM_next_symbol| might be used to search through the probability
+distribution, and then \verb|TLM_encode_symbol| subsequently called once a particular symbol has been
+located (such as the most probable symbol, say). However, in practice, such applications are rare, and the
+extra search cost is more than offset by the gains in speed that result from the combination of the
+API changes described in this and the following sections.
+
+\subsection{Concurrent updating}
+\label{section.concurrent}
+
+The new API supports a fundamental change, called {\em concurrent} updating, in how the
+model updating mechanism is performed. In the old API, the updating mechanism, performed by the routine
+\verb|SMI_update_context|, was separate from the search functions \verb|SMI_next_symbol|
+and \verb|SMI_find_symbol|. Although this offered a functionality that was both elegant and concise, the
+actual implementation was much less so. An implementation of the old API by necessity had to maintain
+substantial local storage to keep track of the current context in order to allow for separate updates.
+The reason for this was that an implementation could not know in advance when executing
+a search function whether an update would ultimately be performed. In a PPM implementation
+based on tries, for example, a search function may need to escape to other nodes in the trie, as well as
+maintain its current position in the current node's list of symbols. Keeping track of all this
+information is needlessly complicated as well as expensive both in terms of on-line memory and execution speed
+since it needs to be done for every symbol in the sequence compounded by every node in the trie that
+needs to be visited for each symbol.
+
+Concurrent updating avoids all of this. Since all nodes on the current active context list need to be updated
+(and not just the node which contains the target symbol), it is simplest to do this concurrently as the search
+for the target symbol is being performed. Hence, the routine \verb|SMI_update_context| can be discarded
+altogether, with
+its functionality replaced by routines that perform both searching and updating simultaneously.
+
+In the new API, the following four ``update'' routines are provided:
+
+\begin{itemize}
+\item \verb|TLM_encode_symbol|
+\item \verb|TLM_decode_symbol|
+\item \verb|TLM_update_symbol|
+\item \verb|TLM_update_codelength|.
+\end{itemize}
+
+The target symbol must be specified for each of the routines. \verb|TLM_update_symbol| updates the context
+for the target symbol, while the other three also update the context concurrently while performing
+additional work such as encoding or decoding the target symbol, or returning is codelength.
+
+In contrast, the following two ``search'' routines do not do any updating, and instead return
+only the codelength for the target or next symbol.
+
+\begin{itemize}
+\item \verb|TLM_find_symbol|
+\item \verb|TLM_next_symbol|.
+\end{itemize}
+
+\subsection{Unbounded alphabets}
+
+In the old API implementation, there was no elegant way of dealing with
+word-based alphabets---alphabets where the size is essentially unbounded.
+In order to accommodate this, the new API provides support for a special model class, one where the alphabet
+is {\em incrementally expanding}. For this class of model, whenever a previously unseen symbol is
+encountered, the maximum symbol number in the alphabet is incremented by 1.
+
+Setting the argument \verb|alphabet_size| to 0 for the routine \verb|TLM_create_model|
+specifies that the alphabet for the new dynamic model is unbounded.
+In this case, allowable symbol numbers range from 0 up to a special \verb|expand_alphabet|
+symbol which is equal to the current maximum symbol number (this is one more
+than the highest previously seen symbol number). If the current symbol
+becomes the \verb|expand_alphabet| symbol, then the current maximum symbol
+number is incremented by 1, thus effectively expanding
+the size of the alphabet by 1. The current maximum symbol number may be
+obtained by calling the routine \verb|TLM_get_model|.
+
+\subsection{The sentinel symbol}
+
+It is a well-known fact that statistics differ markedly both between and within different genres of text
+(Witten {\em et al}., 1999). For example, statistics for a person's name differ markedly from dates; similarly,
+a capital letter S is much more likely to occur at the start of a name than in the middle or end of it.
+
+Included in the old API was an unusual routine \verb|SMI_forcenull_context| whose purpose
+was rather obscure. The effect of this routine was to update the current context so that the current
+position was forced to the null string. It's purpose was to improve the prediction when multiple
+models were being used to predict different genres of text. Prediction was found to significantly
+improve whenever the text genre changed if the prior context was discarded, thus ``forcing'' the model to use
+a different set of statistics, namely only for those symbols that occurred at the start of the new text genre,
+rather than for those that occurred anywhere within it.
+
+The solution to this problem within the new API is to introduce a special symbol, called
+the {\em sentinel} symbol. The sentinel symbol is a common device used to simplify the handling of
+sequential data in many string-based algorithms such as those based on suffix trees (Larsson, 1999).
+The sentinel symbol is useful where there is a break required in the
+updating of the context, such as when the end of string has been reached
+or when more than one model is being used to encode different parts of a string,
+or when during training there are statistics that differ markedly at the start of
+some text than in the middle of it (for example, individual names, as explained above,
+or titles within a long list).
+
+A further routine has been added to the new API, called \verb|TLM_sentinel_symbol|,
+which returns an unsigned integer that uniquely identifies the sentinel symbol.
+The counterpart routine \verb|SMI_forcenull_context|
+from the original API has been removed in the new
+implementation since it is no longer needed.
+The effect of encoding the sentinel symbol is that the prior
+context is forced to the null string i.e. the subsequent context will contain
+just the sentinel symbol itself. This routine is usually used with
+the update and search routines (see section~\ref{section.concurrent}).
+For example, the following source code will update the
+context record so that the current symbol becomes the sentinel symbol:
+\verb|TLM_update_symbol (context, TLM_sentinel_symbol ())|.
+
+The importance of this change should not be
+underesti\-mated---not only does it provide extended functionality, it also simplifies
+the API from a user's perspective. The major benefits, however, are that it greatly
+simplifies certain implementation details, and provides a means for overcoming some difficult
+coding problems while at the same time suggesting new methods. To illustrate,
+the sentinel symbol can be used to improve the prediction for a word based encoder.
+Encoding an extra sentinel symbol at the end of each sentence
+improves compression by one per cent---this is not an
+inconsequential amount considering the amount of effort that has already been expended
+in achieving the encoder's prior performance.
+
+\subsection{Routines that have been added}
+
+The following routines have been added to the API:
+
+\begin{itemize}
+\item \verb|TLM_encode_symbol|
+\item \verb|TLM_decode_symbol|
+\item \verb|TLM_update_symbol|
+\item \verb|TLM_sizeof_model|
+\item \verb|TLM_minlength_model|.
+\end{itemize}
+
+The later two routines are useful utility routines for determining the current
+on-line memory requirements for a model, and it's offline minimum size (the later
+routine can be used in calculating minimum description lengths, for example).
+
+\subsection{Routines that have been removed}
+
+All routines needed to handle probability lists have been removed. These
+include:
+
+\begin{itemize}
+\item \verb|SMI_dump_probs|
+\item \verb|SMI_next_prob|
+\item \verb|SMI_nextnew_prob|
+\item \verb|SMI_reset_prob|
+\item \verb|SMI_entropy_probs|.
+\end{itemize}
+
+\noindent
+The following routines have also been removed:
+
+\begin{itemize}
+\item \verb|SMI_update_context|
+\item \verb|SMI_forcenull_context|.
+\end{itemize}
+
+\subsection{A list of modifications}
+
+The following is a list of the remaining modifications made to the API:
+
+\begin{itemize}
+\item
+All routines now have the \verb|TLM_| prefix instead of \verb|SMI_|.
+ 
+\item
+The routines \verb|TLM_next_symbol| and \verb|TLM_find_symbol| have an extra argument which
+is set to the cost in bits of encoding the symbol given the current context.
+
+\item
+The routine \verb|TLM_update_codelength| replaces \verb|SMI_codelength_symbol|.
+It has the same functionality as the new routine \verb|TLM_update_symbol|, but additionally calculates
+the cost of encoding the symbol as it updates the context to point to
+the specified symbol.
+
+\item
+The result of a subsequent call to \verb|TLM_next_symbol| will no longer
+be affected by a call to \verb|TLM_find_symbol|. Similarly, a call to
+\verb|TLM_find_symbol| and other routines will have no effect on the behavior of \verb|TLM_next_symbol|.
+
+\item
+\verb|SMI_entropy_symbol| has been removed since technically the value
+being returned was the length of encoding the symbols in bits, and not strictly the entropy.
+This value is now returned by the following three routines:
+\verb|TLM_update_codelength|, \verb|TLM_find_symbol| and \verb|TLM_next_symbol|.
+
+\item The argument \verb|new_title| has been added to the \verb|TLM_load_model| function.
+
+\item An extra argument \verb|dump_symbol_function| has been added to the \verb|TLM_dump_model| and
+\verb|TLM_dump_models| routines. This argument is a pointer to a user-defined function for printing symbols.
+
+\end{itemize}
+
+\section{Extending the API}
+\label{section.extensions}
+
+The original conception of the API was to provide a
+powerful, though restricted, interface for the probabilistic modelling of sequential text.
+During the evolutionary process accompanying its development, however, it became apparent that
+broadening the scope of the API to encompass a much wider range of text operations would be
+beneficial. For example, routines were needed to support the manipulation
+of sequences of symbols (similar to the string functions in the C programming language).
+As well, it was found that many of the API-based programs devised for a diverse class of correction-type applications
+such as spelling correction, name location and word segmentation
+had remarkable similarities in the underlying source code---despite the programs being long and complex,
+only a few changes were needed to define the key differences
+between the applications. It was felt that these similarities could be encapsulated in some manner
+to create a much more powerful specification.
+
+In light of this, a number of extensions have been made to the API, the
+full description of which can be found in Appendices A, B and C.
+To distinguish the new and modified routines with the ones in the previous API
+specification, the routines have been grouped into three sub-libraries, one
+for the language modelling routines, one for text manipulation
+and the third to help with the correction-based algorithms. Each has been
+assigned a unique prefix to identify them---\verb|TLM_|, \verb|TXT_|
+and \verb|TMM_| respectively. An overview of the latter two sub-libraries are described
+in the next two sub-sections.
+
+\subsection{Text routines}
+
+A new object, called a {\em text record}, has been added to the API to support
+the manipulation of sequences of symbols. A text record is created using the routine
+\verb|TXT_create_text| which returns a text number as a pointer to a text record.
+The API manages the text numbers internally. It allocates them when a text record is created
+and de-allocates them when a text record is released.
+
+The API supports a sub-library of routines for comparing and copying text records and for loading and dumping the text
+to and from a file. The sub-library also supports routines for manipulating symbols contained in the text
+records---symbols can be inserted into and extracted from the text, for example. There are also
+routines for determining the symbol type such as \verb|TXT_is_alphabetic|, \verb|TXT_is_nemeric|
+and \verb|TXT_is_punct|. These routines reproduce the functionality of the string routines from the C programming
+language. Many of the routines, in fact, have an exact counterpart, for example the boolean functions
+(such as \verb|TXT_is_alphabetic| and \verb|TXT_is_punct|).
+
+\subsection{Markup models}
+
+The extended API also introduces a new class of model, called a {\em markup}
+model, that can be used for certain types of applications which involve
+correcting or ``marking up'' text in some manner. The essential idea here is that
+the output text can be considered to be a corruption of the source text---this is
+based on a common framework for the statistical modelling of many natural language
+applications using a theory developed by Shannon (1948) to model a noisy communication
+channel (Teahan \emph{et al.}, 1998). The basic idea is to find the text with maximum probability
+given the observed output text. This is performed using a dynamic programming search
+algorithm such as the Viterbi (1967) algorithm. 
+
+With this theory, the idea is to use two models---one a model of
+``good'' text and the other a model of the types of errors that can occur in
+the original text, sometimes referred to as a \emph{confusion} model.
+Applications include the insertion of spaces back into text where
+they have been elided and the correction of
+spelling errors. An even more complex problem is the extraction of text from
+other data such as OCR data or speech. The
+principle is the same---two models are used. One model is of the confusion
+between the original glyphs or phonemes and the text, together with a model of
+the good text.
+
+Witten {\em et al.} (1999) apply the same approach to text mining---they show
+how a broad range of patterns such as names, dates, email addresses and URLs can
+be located in text. The key idea here is that the training data for the model of the good text
+contains text that is already ``marked up'' in some manner. The correction process
+is then performed to recover the most probable source text (with special markup symbols inserted)
+from the unmarked-up observed text.
+
+\begin{table}
+\centering
+\begin{tabular}{|l|l|} \hline
+{\bf Application} & {\bf Markup transformations} \\ \hline \hline
+{\em Chinese word segmentation} & $\star \mapsto \star$; $\star \mapsto \verb*| | \star$. \\ \hline
+{\em English word segmentation} & $\star \mapsto \star$; $\alpha \mapsto \verb*| | \alpha$. \\ \hline
+{\em Alphabetic input from}
+& $2 \mapsto \mbox{[abcABC]}$; $3 \mapsto \mbox{[defDEF]}$; $4 \mapsto \mbox{[ghiGHI]}$; \\
+{\em a mobile telephone}
+& $5 \mapsto \mbox{[jklJKL]}$; $6 \mapsto \mbox{[mnoMNO]}$; $7 \mapsto \mbox{[pqrsPQRS]}$; \\
+& $8 \mapsto \mbox{[tuvTUV]}$; $9 \mapsto \mbox{[wxyzWXYZ]}$. \\ \hline
+{\em Spelling correction}
+& $\star \mapsto \star$; $\alpha \mapsto $[a$\ldots$zA$\ldots$Z0$\ldots$9];
+$\alpha \mapsto \alpha$[a$\ldots$zA$\ldots$Z0$\ldots$9]; $\ldots$ \\ \hline
+{\em OCR spelling correction}
+& $\star \mapsto \star$; c $\mapsto$ e; e $\mapsto$ c; m $\mapsto$ n; m $\mapsto$ ni; n $\mapsto$ m; ni $\mapsto$ m; \\
+& El $\mapsto$ El; El $\mapsto$ H; H $\mapsto$ El; $\ldots$ \\\hline
+{\em Language identification}
+& $\star \mapsto \star$; $\star \mapsto \mbox{\em \{English, German, Spanish \ldots\}} \star$. \\ \hline
+\end{tabular}
+\caption{\label{table.markups} Some applications and their markup transformations}
+\end{table}
+
+These ideas provide us with an extremely powerful method for transforming text.
+The essential differences between quite diverse applications can be characterized
+by a few transformations as illustrated by Table~\ref{table.markups}.
+Listed in the left hand column of the table are a number of applications;
+a terse representation of the transformations that uniquely characterize each
+application is given in the right hand column.
+These are the transformations that are performed
+when the most probable source text is being ``recovered'' from the observed text.
+The form {\em observed text} $\mapsto$ {\em corrected text} is used to denote a transformation
+from the observed to the corrected text; for example, {\em El} $\mapsto$ {\em H} denotes that
+that bigraph {\em El} is corrected to the letter {\em H}. The symbol $\star$ is used to denote the
+``wildcard'' symbol---this will match any symbol in the observed text; the $\alpha$ symbol
+will match just alphanumeric symbols. Ranges of symbols are denoted by the symbols between
+square brackets ([$\ldots$], as used for Unix regular expressions). Special {\em model symbols}
+are denoted between braces ({\em \{$\ldots$\}})---these symbols signal to the transformation process
+to insert a sentinel symbol into the corrected sequence (to terminate the coding of the prior context)
+after which all subsequent symbols will be coded using the new model number (up until the next
+sentinel symbol is encountered).
+
+As a further explanation of the table, the Chinese word segmentation application can be characterized by just two
+markup transformations---one which keeps the input symbol unchanged,
+and another which inserts an extra space before it (denoted by the \verb*| | symbol).
+For English word segmentation, the space insertion only occurs for alphanumeric characters. For the
+alphabetic input from a mobile telephone application, ranges of symbols are used to correct each digit into
+its corresponding alphabetic equivalent; similarly for spelling correction, the ranges are used
+to denote that each alphanumeric character can be replaced or followed by any other alphanumeric character.
+The markups listed for the OCR spelling correction application are a small sample of typical confusions
+taken from Teahan {\em et al.} (1998). Finally, the language identification application specifies that
+the language model being used to predict future symbols should change for every symbol in the observed sequence.
+
+The extended API supports this powerful formulation in the following manner.
+A sub-library of routines (see Appendix C) has been added that can be used especially
+for correcting text. These routines make use of a new object, called a {\em markup record},
+which is created using the routine \verb|TMM_create_markup|. Like the other API creation routines,
+this routine returns a markup number as a pointer to a markup record.
+The API manages these numbers internally and allocates them when a markup record is created
+and de-allocates them when a text record is released. A markup sequence is initiated by the
+\verb|TMM_start_markup| routine---it takes an argument \verb|language_model| which is the
+model number of the language model to be used to predict the corrected sequence.
+Multiple calls to this procedure will cause
+separate searches to be initiated for each of the specified language models.
+This routine must be called at least once before the routine \verb|TMM_perform_markup| is called, which is
+used to perform the markup search process itself. This routine returns the number of a newly created text record
+that contains the corrected text.
+
+The specification of the markup transformations that define the markup model is accomplished
+by the \verb|TMM_add_markup| routine. This takes three arguments---\verb|codelength|,
+a real value (float) which is set to the cost in bits of making the correction; and two
+format specifications which define the markup transformation, \verb|observed_text_format| and \verb|markup_text_format|,
+the formats of the observed and corrected texts respectively.
+
+The codelength value determines how well the transformation will perform against the other
+transformations during the search process. In some applications (such as word segmentation),
+a value of 0 may be sufficient. Other applications may require the codelength to be
+determined from training data; for example, for OCR spelling correction, the codelength
+of each of the transformations is calculated from frequency counts tabulated from common
+confusions made from typical OCR output.
+
+The format specifications take the same form as that used for the well-known C ``printf'' routines.
+These are  composed of zero or more directives: ordinary characters (not \%),
+which are copied unchanged to the corrected text); and conversion specifications which follow
+the character \%, each of which results in fetching zero or more subsequent arguments.
+There are conversion characters which enable the specification of wildcard and non-ASCII symbols,
+as well as range symbols and model symbols (as described above). Special {\em function} symbols
+also allow boolean functions such as \verb|TXT_is_alphanumeric| to be used in the specification.
+
+\section{Some sample C source code}
+
+\label{section.samples}
+
+This section gives sample C source code for the following six applications:
+
+\begin{enumerate}
+\item a character-based encoding procedure;
+\item a character-based decoding procedure;
+\item a procedure for building (``training'') static and dynamic models;
+\item a procedure for finding the ``best'' model by calculating the codelength
+      required to compress some input text (this can be used to identify the
+      natural language in which the input text is written, or to identify the
+      most likely author of the text, for example);
+\item a procedure that can segment either English or Chinese text into words; and
+\item a procedure that can be used to translate numeric input keyed
+      from a mobile telephone into alphabetic input.
+\end{enumerate}
+
+\subsection{A character based encoder}
+
+The following procedure encodes characters from the standard input file.
+The argument \verb|model| specifies the model number of the language model---this number has been returned
+by an earlier call to either the routine \verb|TLM_create_model| (for a new dynamic model)
+or to \verb|TLM_load_model| (for a static or dynamic model loaded from disk).
+The argument \verb|coder| specifies the coder number of the arithmetic coder
+that is used to perform the arithmetic encoding and decoding (this is returned
+by the \verb|TLM_create_coder| routine).
+The sentinel symbol has been used to encode the eof character.
+ 
+\begin{verbatim}
+void encode_text (unsigned int model, unsigned int coder)
+/* Encodes the text using the model and arithmetic coder. */
+{
+  unsigned int context, symbol;
+  int cc;
+
+  context = TLM_create_context (model);
+  for (;;) {   /* repeat until EOF */
+    cc = getc (stdin);
+    if (cc != EOF)
+      symbol = cc;
+    else
+      symbol = TLM_sentinel_symbol ();
+    TLM_encode_symbol (context, coder, symbol);
+    if (symbol == TLM_sentinel_symbol ())
+      break;
+  }
+  TLM_release_context (context);
+}
+\end{verbatim}
+
+\subsection{A character based decoder}
+
+The following decoding procedure is equivalent to the encoding one above---it
+decodes characters from the standard input file. Like above, the
+arguments \verb|model| and \verb|coder| specify the language model and
+arithmetic coder being used; and the sentinel symbol is used to decode
+the eof character.
+ 
+\begin{verbatim}
+void decode_text (unsigned int model, unsigned int coder)
+/* Encodes the text using the model and arithmetic coder. */
+{
+  unsigned int context, symbol;
+
+  context = TLM_create_context (model);
+  for (;;) {   /* repeat until sentinel symbol */
+    symbol = TLM_decode_symbol (context, coder);
+    if (symbol == TLM_sentinel_symbol ())
+      break;
+  }
+  TLM_release_context (context);
+}
+\end{verbatim}
+
+\subsection{Building a static or dynamic model }
+
+The following procedure updates the model using text from standard input,
+and writes the model to standard output. It is similar to the
+encoding and decoding procedures above, except that it uses the routine
+\verb|TLM_update_symbol| to update the model instead of either \verb|TLM_encode_symbol| or
+\verb|TLM_decode_symbol| as above. Similarly, the argument \verb|model| specifies the language model
+being used; and the sentinel symbol is used for the eof character. The boolean argument \verb|static| specifies
+whether the model should be written out as a static or dynamic model when finished.
+
+\begin{verbatim}
+void train_model (unsigned int model, boolean static)
+/* Trains the model from the characters obtained from standard input. */
+{
+  unsigned int context, symbol;
+  int cc;
+
+  context = TLM_create_context (model);
+  for (;;) {   /* repeat until EOF */
+    cc = getc (stdin);
+    if (cc != EOF)
+      symbol = cc;
+    else
+      symbol = TLM_sentinel_symbol ();
+    TLM_update_symbol (context, symbol);
+    if (symbol == TLM_sentinel_symbol ())
+      break;
+  }
+  TLM_release_context (context);
+
+  if (static)
+    TLM_write_model (stdout, Model, TLM_static);
+  else
+    TLM_write_model (stdout, Model, TLM_dynamic);
+}
+\end{verbatim}
+
+\subsection{Identifying the ``best'' model}
+
+The following procedure finds the model that is best able
+to compress text from standard input.
+It assumes that a number of models have already been created or loaded
+using either the \verb|TLM_create_model| or \verb|TLM_load_model| routines.
+The procedure also demonstrates the use of various text routines to load
+and obtain the symbols from the standard input.
+
+If the models have been trained on natural language texts (such as text that is representative of
+English, German or Spanish, say),
+then this code will be able identify the natural language of the input text
+with a high degree of accuracy. The method is also quite successful at distinguishing dialects such
+as American and British English. On the other hand, if the models have been trained on text that
+is representative of the writing styles of a number of different authors, then the code will be
+able to identify the most likely author of the text instead.
+
+\begin{verbatim}
+void find_best_model ()
+/* Finds the ``best'' model at compressing the characters obtained
+   from standard input. */
+{
+  unsigned int model, source_text, pos;
+  float codelength, codelen, min_codelength;
+  char *title, min_title;
+
+  min_codelength = 0.0;
+  min_title = NULL;
+  source_text = TXT_load_text (stdin);
+  TLM_reset_modelno ();
+  while ((model = TLM_next_modelno ()))
+  { /* Compute codelength for each language model */
+    codelength = 0.0;
+    context = TLM_create_context (model);
+    pos = 0;
+    while (TXT_getsymbol_text (source_text, pos++, &symbol))
+      { /* Calculate codelength for each symbol */
+        TLM_update_codelength (context, symbol, &codelen);
+        codelength += codelen;
+      }
+    TLM_release_context (context);
+    title = TLM_get_title (model);
+    if ((min_codelength == 0.0) || (codelength < min_codelength)) {
+      min_codelength = codelength;
+      min_title = title;
+    }
+    printf ("%-32s %9.3f\n", title, codelength);
+  }
+  printf ("Minimum codelength for %s model\n", min_title);
+}
+\end{verbatim}
+
+\subsection{English and Chinese word segmentation}
+
+The following procedure demonstrates the use of a simple markup model for
+segmenting words in either English or Chinese text. The markup model used
+in both cases first generates one markup for each symbol in the input, then
+generates an alternative markup by prepending a space before each input
+symbol. This is done for all input symbols for Chinese text, but only for
+alphabetic symbols for English text. The argument \verb|language_model|
+specifies the model number of the language model being used for the
+segmentation. The boolean argument \verb|English| indicates whether
+the model should segment for English or Chinese text.
+
+\begin{verbatim}
+void segment_text (unsigned int language_model, boolean English)
+/* Segments the text from standard input using the language model. */
+{
+  unsigned int markup_model, source_text;
+
+  markup_model = TMM_create_markup ();
+  TMM_add_markup (markup_model, 0.0, "%w", "%w");
+  if (!English)
+    TMM_add_markup (markup_model, 0.0, "%w", " %w");
+  else
+    TMM_add_markup (markup_model, 0.0, "%f", " %f", TXT_is_alphanumeric);
+
+  source_text = TXT_load_text (stdin);
+
+  TMM_start_markup (markup_model, language_model);
+  markup_text =
+      TMM_perform_markup (markup_model, language_model, source_text);
+  TXT_dump_text (stdout, markup_text, TXT_dump_symbol);
+
+  TMM_release_text (source_text);
+  TMM_release_text (markup_text);
+  TMM_release_markup (markup_model);
+}
+\end{verbatim}
+
+\subsection{Translating alphabetic input from a mobile telephone}
+
+The following procedure demonstrates the use of a markup model for
+translating numeric input keyed in from a mobile
+telephone into it's most likely alphabetic equivalent.
+The markup model generates the alphabetic alternatives for each numeric
+character found in the text obtained from standard input, and the most likely
+translation is written out to standard output. The argument \verb|language_model|
+specifies the model number of the language model being used.
+
+\begin{verbatim}
+void translate_text (unsigned int language_model)
+/* Translate the numeric text into alphabetic text using the language
+   model. */
+{
+  unsigned int markup_model, source_text;
+
+  markup_model = TMM_create_markup ();
+  TMM_add_markup (markup_model, 0.0, "2", "%[abcABC]");
+  TMM_add_markup (markup_model, 0.0, "3", "%[defDEF]");
+  TMM_add_markup (markup_model, 0.0, "4", "%[ghiGHI]");
+  TMM_add_markup (markup_model, 0.0, "5", "%[jklJKL]");
+  TMM_add_markup (markup_model, 0.0, "6", "%[mnoMNO]");
+  TMM_add_markup (markup_model, 0.0, "7", "%[pqrsPQRS]");
+  TMM_add_markup (markup_model, 0.0, "8", "%[tuvTUV]");
+  TMM_add_markup (markup_model, 0.0, "9", "%[wxyzWXYZ]");
+
+  source_text = TXT_load_text (stdin);
+
+  TMM_start_markup (markup_model, language_model);
+  markup_text =
+      TMM_perform_markup (markup_model, language_model, source_text);
+  TXT_dump_text (stdout, markup_text, TXT_dump_symbol);
+
+  TMM_release_text (source_text);
+  TMM_release_text (markup_text);
+  TMM_release_markup (markup_model);
+}
+\end{verbatim}
+
+\section{Future directions}
+
+There are a number of directions in which future work with this API could proceed. The following is a
+short list of a few possibilities, some of which are currently in progress:
+
+\begin{itemize}
+\item It was noted in the paper describing the original API implementation that the decision
+      to use the C programming language for the API was largely a pragmatic one---Java was posed 
+      as an alternative, for the following reasons: it provides special support for defining interfaces; models and
+      contexts and the like could be defined as different object classes with strong type-checking; and
+      it provides a standard exception handling mechanism that would allow the API to deal with
+      error-handling in an elegant way. Java would also overcome, to some extent, the problems of portability.
+
+\item Work is proceeding at improving the API's efficiency in a number of areas, in terms of memory usage,
+      execution speed, predictive performance and accuracy. For example, it is possible to substantially
+      reduce the offline storage space for static models, as well as online storage for both static and
+      dynamic models. Predictive performance can be significanly improved using current state of the
+      art techniques (such as state selection methods used by Bunton, 1996). There are also much faster
+      alternative algorithms for performing a Viterbi-based search, which may or may not impede on the
+      accuracy of the output.
+
+\item The implementation does not currently handle hierarchical markup models as described by
+      Witten {\em et al.} (1999). A number of different ways of handling this are currently being
+      investigated.
+
+\item Certain text modelling problems still do not elegantly fall within the reach of the extended API.
+      For example, building a part of speech tagger using the API based on certain classes of model would be difficult
+      (such as models that base the prior and future context on both words {\em and} part of speech tags).
+      These modelling problems need to be investigated further, and the API modified or further extended as needed.
+\end{itemize}
+
+\section{Acknowledgments}
+
+I would like to thank Jan \AA berg for the many discussions
+and suggestions about this work.
+
+\section{References}
+
+{\small
+\begin{list}{}{\setlength{\parsep}{0.1 cm} \setlength{\rightmargin}{0 cm}
+\setlength{\leftmargin}{0 cm}}
+\baselineskip 13pt
+
+\item []
+Bunton, S. 1996.
+{\em On-line stochastic processes in data compression}.
+Ph.D. thesis, University of Washington.
+
+\item []
+Cleary, J.G. and Witten, I.H. 1984.
+``Data compression using adaptive coding and partial string matching.''
+{\em IEEE Transactions on Communications}, {\bf 32}(4), 396--402.
+
+\item []
+Cleary, J.G. \& Teahan, W.J. 1997.
+``Unbounded length contexts for PPM.''
+{\em Computer Journal}, {\bf 40}(2/3): 67--75.
+
+\item []
+Cleary, J.G. \& Teahan, W.J. 1999.
+``An open interface for probabilistic models of text'' in
+{\em Proceedings DCC'99}, edited by Storer, J.A. \& Cohn, M.,
+IEEE Computer Society Press.
+
+\item []
+Irvine, S.A. 1997. {\em Compression and Cryptology}. D.Phil. thesis,
+Univ. of Waikato, N.Z.
+
+\item []
+Larsson, N.J. 1999.
+{\em Structures of string matching and data compression}.
+Ph.D. thesis, Lund University, Sweden.
+
+\item []
+Moffat, A., Neal, R. \& Witten, I.H. 1995.
+``Arithmetic coding revisited'' in {\em Proceedings DCC'95},
+edited by Storer, J.A. \& Cohn, M., pages 202--211. IEEE Computer Society
+Press.
+
+\item []
+Moffat, A. 1990.
+``Implementing the PPM data compression scheme.''
+{\em IEEE Transactions on Communications}, {\bf 38}(11): 1917--1921.
+
+\item []
+Shannon, C.E. 1948. ``A mathematical theory of communication,''
+{\em Bell System Technical Journal}, {\bf 27}, 379--423, 623--656.
+
+\item []
+Teahan, W.J. 1998. {\em Modelling English text}. D.Phil. thesis,
+Univ. of Waikato, N.Z.
+
+\item []
+Teahan, W.J., Inglis, S., Cleary, J.G. \& Holmes, G. 1998.
+``Correcting English text using PPM models'' in
+{\em Proceedings DCC'98}, edited by Storer, J.A. \& Cohn, M.,
+IEEE Computer Society Press.
+
+\item []
+Witten, I.H., Bray, Z., Mahoui, M. \& Teahan, 1998.
+``Text mining: A new frontier for lossless compression'' in
+{\em Proceedings DCC'99}, edited by Storer, J.A. \& Cohn, M.,
+IEEE Computer Society Press.
+
+\item []
+Viterbi, A.J. 1967. ``Error bounds for convolutional codes and an
+asymptotically optimal decoding algorithm,'' {\em IEEE Transactions on
+Information Theory}, {\bf 13}, 260--269.
+
+\end{list}
+}
+
+\baselineskip 9pt
+
+{\small
+\section{Appendix A---Language model routines}
+
+This appendix describes all of the language model routines that
+can be used for modelling sequential text---these correspond
+to the routines in the original API description. All these routines
+may be identified by their common prefix \verb|TLM_|.
+
+\begin{verbatim}
+#define NIL 0
+#define TLM_static 0
+#define TLM_dynamic 1
+
+typedef unsigned char boolean;
+\end{verbatim}
+
+\begin{verbatim}
+unsigned int TLM_copy_context (unsigned int context);
+\end{verbatim}
+
+\vspace{-0.2cm}
+Creates a new context record, copies the contents of the specified context
+into it, and returns an integer reference to it.
+
+\begin{verbatim}
+unsigned int TLM_create_coder (unsigned int max_frequency,
+             void (*arithmetic_encode) (unsigned int, unsigned int, unsigned int),
+             void (*arithmetic_decode) (unsigned int, unsigned int, unsigned int),
+             unsigned int (*arithmetic_decode_target) (unsigned int));
+\end{verbatim}
+
+\vspace{-0.2cm}
+Creates and returns an unsigned integer which provides a reference to a coder
+record associated with an arithmetic coder. \verb|max_frequency|
+specifies the maximum frequency allowed for the coder. The arguments
+\verb|arithmetic_encode|, \verb|arithmetic_decode| and a \verb|arithmetic_decode_target| are
+pointers to the necessary routines required for encoding and decoding. Both
+\verb|arithmetic_encode| and \verb|arithmetic_decode| take three unsigned integers
+as arguments that specify the current arithmetic coding range (low, high
+and total); \verb|arithmetic_decode_target| takes just a single unsigned integer
+as an argument, which is set to the total of the current coding range.
+
+\begin{verbatim}
+unsigned int TLM_create_context (unsigned int model);
+\end{verbatim}
+
+\vspace{-0.2cm}
+Creates and returns an unsigned integer which provides a reference to a
+context record associated with the model's context. The current position is
+set to the null string. The current symbol is set to the first predicted
+symbol.
+
+\begin{verbatim}
+unsigned int TLM_create_model (unsigned int alphabet_size, char *title, ...);
+\end{verbatim}
+
+\vspace{-0.2cm}
+Creates a new empty dynamic model. Returns the new model number allocated
+to it if the model was created successfully, \verb|NIL| if not.
+
+\verb|alphabet_size| specifies the number
+of symbols permitted in the alphabet (all symbols for this model must have
+values from 0 to one less than \verb|alphabet_size|).
+An \verb|alphabet_size| of 0 specifies that the alphabet is unbounded.
+(This is useful for word-based alphabets, for example). In this case,
+allowable symbol numbers range from 0 up to a special ``\verb|expand_alphabet|''
+symbol which is equal to the current maximum symbol number (this is one more
+than the highest previously seen symbol number). If the current symbol
+becomes the \verb|expand_alphabet| symbol, then the
+current maximum symbol number is incremented by 1, thus effectively expanding
+the size of the alphabet by 1. The current maximum symbol number may be
+obtained by calling the routine \verb|TLM_get_model|.
+
+The argument \verb|title| is intended to be a short human readable text description
+of the origins and content of the model. This argument is followed by a
+variable number of parameters used to hold model information which differs
+between implementations. For example, this implementation uses it to specify
+the maximum order of the PPM model, and whether the model should perform
+update exclusions.
+
+\begin{verbatim}
+unsigned int TLM_decode_symbol (unsigned int context, unsigned int coder)
+\end{verbatim}
+
+\vspace{-0.2cm}
+Returns the symbol decoded using the arithmetic coder. Updates the
+context record so that the last symbol in the context becomes the
+decoded symbol.
+
+\begin{verbatim}
+void TLM_dump_model (FILE *fp, unsigned int model,
+    void (*dump_symbol_function) (FILE *, unsigned int));
+\end{verbatim}
+
+\vspace{-0.2cm}
+Prints a human readable version of the model (intended mainly for debugging).
+The argument \verb|dump_symbol_function| is a pointer to a function for printing symbols.
+If this is \verb|NULL|, then each symbol will be printed as an unsigned int surrounded by
+angle brackets (e.g. \verb|<123>|), unless it is human readable ASCII, in which case it will
+be printed as a char.
+
+\begin{verbatim}
+void TLM_dump_models (FILE *fp,
+    void (*dump_symbol_function) (FILE *, unsigned int));
+\end{verbatim}
+
+\vspace{-0.2cm}
+Writes a human readable version of all the currently valid models to the file.
+The argument \verb|dump_symbol_function| is a pointer to a function for printing symbols.
+If this is \verb|NULL|, then each symbol will be printed as an unsigned int surrounded by
+angle brackets (e.g. \verb|<123>|), unless it is human readable ASCII, in which case it will
+be printed as a char.
+
+\begin{verbatim}
+void TLM_encode_symbol (unsigned int context, unsigned int coder,
+    unsigned int symbol);
+\end{verbatim}
+
+\vspace{-0.2cm}
+Encodes the specified symbol using the arithmetic coder. Updates the context record so
+that the last symbol in the context becomes the encoded symbol.
+
+\begin{verbatim}
+void TLM_find_symbol (unsigned int context, unsigned int symbol);
+\end{verbatim}
+
+\vspace{-0.2cm}
+Finds the predicted symbol in the context. The argument codelength is set to
+the cost in bits of encoding the specified symbol given the current context. The context
+record is not updated.
+
+\begin{verbatim}
+unsigned int TLM_getcontext_modelno (unsigned int context);
+\end{verbatim}
+
+\vspace{-0.2cm}
+Returns the model number associated with the context.
+
+\begin{verbatim}
+unsigned int TLM_getcontext_position (unsigned int context);
+\end{verbatim}
+
+\vspace{-0.2cm}
+Returns an unsigned integer which uniquely identifies the current position
+associated with the context. (One implementation is to return a memory
+location corresponding to the current position. This routine is useful if
+you need to check whether different contexts have encoded the same prior
+symbols as when checking whether the context pathways converge in the
+Viterbi or trellis-based algorithms.)
+
+\begin{verbatim}
+boolean TLM_get_model (unsigned int model, unsigned int *model_type,
+        unsigned int *alphabet_size, unsigned int *max_symbol, char **title, ...);
+\end{verbatim}
+
+\vspace{-0.2cm}
+Returns information describing the model. Returns \verb|NIL| if the model
+does not exist (and leaves the other parameters unmodified in this case),
+non-zero otherwise.  \verb|alphabet_size|, \verb|title| and
+\verb|parameters| are the values used to create the model in
+\verb|TLM_create_model|. \verb|model_type| is set to \verb|TLM_dynamic|
+or \verb|TLM_static| depending on whether the model is static or dynamic.
+\verb|max_symbol| is set to the current maximum symbol number. \verb|title|
+is followed by a variable number of parameters used to hold model information which differs
+between implementations. For example, this implementation uses it to specify
+the maximum order of the PPM model, and whether the model should perform
+update exclusions. 
+
+\begin{verbatim}
+unsigned int TLM_load_model (FILE *fp, char *new_title);
+\end{verbatim}
+
+\vspace{-0.2cm}
+Loads a model which has been previously saved to the file into memory and
+allocates it a new model number which is returned. If \verb|new_title|
+is non-null, then the model is assigned the new title, replacing whatever
+the old title was. 
+
+\begin{verbatim}
+unsigned int TLM_minlength_model (unsigned int model);
+\end{verbatim}
+
+\vspace{-0.2cm}
+Returns the minimum number of bits needed to write the model
+out to disk as a static model and recover it later. This is
+useful for computing minimum description lengths of messages.
+
+\begin{verbatim}
+unsigned int TLM_next_modelno (void);
+\end{verbatim}
+
+Returns the model number of the next valid model. Returns \verb|NIL| if
+there isn't any.
+
+\begin{verbatim}
+boolean TLM_next_symbol (unsigned int context, unsigned int *symbol,
+        float *codelength);
+\end{verbatim}
+
+\vspace{-0.2cm}
+Returns the next predicted symbol in the context and the cost in bits of
+encoding it. The context record is not updated.
+If a sequence of calls to \verb|TLM_next_symbol| are made, every symbol in the alphabet
+will be visited exactly once although the order in which they are visited is undefined
+being implementation and data dependent. The function returns \verb|FALSE| when there are no
+more symbols to process. \verb|TLM_reset_symbol| will reset the current position to point
+back at the first predicted symbol of the current context.
+
+The codelength value is the same as that returned by the routines \verb|TLM_find_symbol| and
+\verb|TLM_update_codelength| which may use faster search methods to find the symbol's
+codelength more directly (rather than sequentially as \verb|TLM_next_symbol| does). A call to
+the \verb|TLM_find_symbol| routine or other routines will have no affect on subsequent calls to
+the routine \verb|TLM_next_symbol|.
+
+\begin{verbatim}
+unsigned int TLM_numberof_models ();
+\end{verbatim}
+
+\vspace{-0.2cm}
+Returns the number of currently valid models.
+
+\begin{verbatim}
+void TLM_release_coder (unsigned int coder);
+\end{verbatim}
+
+\vspace{-0.2cm}
+Releases the memory allocated to the coder and the coder number (which may
+be reused in later \verb|TLM_create_coder| calls).
+
+\begin{verbatim}
+void TLM_release_context (unsigned int context);
+\end{verbatim}
+
+\vspace{-0.2cm}
+Releases the memory allocated to the context and the context number (which may
+be reused in later \verb|TLM_create_context| or \verb|TLM_copy_context| calls).
+
+\begin{verbatim}
+void TLM_release_model (unsigned int model);
+\end{verbatim}
+
+\vspace{-0.2cm}
+Releases the memory allocated to the model and the model number (which may
+be reused in later \verb|TLM_create_model| or \verb|TLM_load_model|
+calls). A run-time error will be generated if an attempt is made to release
+a model that still has active contexts pointing at it.
+
+\begin{verbatim}
+void TLM_release_models ();
+\end{verbatim}
+
+\vspace{-0.2cm}
+Releases the memory used by all the models.
+
+\begin{verbatim}
+void TLM_reset_modelno ();
+\end{verbatim}
+
+\vspace{-0.2cm}
+Resets the current model number so that the next call to
+\verb|TLM_next_modelno| will return the first valid model number (or
+\verb|NIL| if there are none).
+
+\begin{verbatim}
+void TLM_reset_symbol (unsigned int context);
+\end{verbatim}
+
+\vspace{-0.2cm}
+Resets the context record to point at the first predicted symbol of the
+current position.
+
+\begin{verbatim}
+unsigned int TLM_sentinel_symbol (unsigned int model);
+\end{verbatim}
+
+\vspace{-0.2cm}
+Returns an unsigned integer that uniquely identifies a special ``sentinel''
+symbol. The sentinel symbol is used where there is a break required in the
+updating of the context, such as when the end of string has been reached
+or when more than one model is being used to encode different parts of
+a string. The effect of encoding the sentinel symbol is that the prior
+context is forced to the null string i.e. the subsequent context will contain
+just the sentinel symbol itself. This is useful during training if there are
+statistics that differ markedly at the start of some text than in the middle
+of it (for example, individual names, and titles within a long list).
+
+This routine is usually used with the update and search routines (see section~\ref{section.concurrent}).
+For example, the following source code will the
+context record so that the current symbol becomes the sentinel symbol:
+\verb|TLM_update_symbol (context, TLM_sentinel_symbol ())|.
+
+\begin{verbatim}
+unsigned int TLM_sizeof_model (unsigned int model);
+\end{verbatim}
+
+\vspace{-0.2cm}
+Returns the current number of bits needed to store the
+model in memory.
+
+\begin{verbatim}
+void TLM_update_codelength (unsigned int context, unsigned int symbol,
+     float *codelength);
+\end{verbatim}
+
+\vspace{-0.2cm}
+Updates the context record so that the current symbol becomes symbol,
+returning at the same time the code length of the specified symbol in
+bits (i.e. the cost of encoding it given the current context).
+
+\begin{verbatim}
+void TLM_update_symbol (unsigned int context, unsigned int symbol);
+\end{verbatim}
+
+\vspace{-0.2cm}
+Updates the context record so that the current symbol becomes symbol.
+
+\begin{verbatim}
+void TLM_write_model (FILE *fp, unsigned int model, unsigned int model_type);
+\end{verbatim}
+
+\vspace{-0.2cm}
+Writes out the model to the specified file (which can then be loaded
+by other applications later). \verb|model_type| must have the value
+\verb|TLM_static| or \verb|TLM_dynamic| and determines whether the
+model is static or dynamic when it is later reloaded using
+\verb|TLM_load_model|.
+
+
+\section{Appendix B---Text routines}
+
+This appendix describes all of the text routines that can be used
+for manipulating sequential text (i.e. sequences of symbols). All these routines may be
+identified by their common prefix \verb|TXT_|.
+
+\begin{verbatim}
+int TXT_compare_text (unsigned int text1, unsigned int text2);
+\end{verbatim}
+
+\vspace{-0.2cm}
+Compares the text records \verb|text1| with \verb|text2|. Returns zero if they are the same,
+negative if \verb|text1| $<$ \verb|text2|, and positive if \verb|text1| $>$ \verb|text2|.
+The sentinel symbol returned by the routine \verb|TLM_sentinel_symbol| is regarded as
+having a value lower than all other symbols.
+
+\begin{verbatim}
+unsigned int TXT_copy_text (unsigned int text);
+\end{verbatim}
+
+\vspace{-0.2cm}
+Creates a new text record, copies the contents of the specified text
+into it, and returns an integer reference to it.
+
+\begin{verbatim}
+unsigned int TXT_create_text (void);
+\end{verbatim}
+
+\vspace{-0.2cm}
+Creates and returns an unsigned integer which provides a reference to a text
+record.
+
+\begin{verbatim}
+void TXT_dump_symbol (FILE * fp, unsigned int symbol);
+\end{verbatim}
+
+\vspace{-0.2cm}
+Writes the ASCII symbol out in human readable form (excluding \verb|'\n'| and \verb|'\t'| characters).
+
+\begin{verbatim}
+void TXT_dump_text (FILE *fp, unsigned int text,
+     void (*dump_symbol_function) (FILE *, unsigned int));
+\end{verbatim}
+
+\vspace{-0.2cm}
+Dumps out a human readable version of the text record to the specified file. The argument
+\verb|dump_symbol_function| is a pointer to a function for printing symbols. If this is NULL,
+then each symbol will be printed as an unsigned int surrounded by angle brackets
+(e.g. \verb|<123>|), unless it is human readable ASCII, in which case it will be printed as a char.
+
+\begin{verbatim}
+void TXT_extract_text (unsigned int text, unsigned int subtext,
+     unsigned int subtext_pos, unsigned int subtext_len);
+\end{verbatim}
+
+\vspace{-0.2cm}
+Extracts the text from out of the text record. The argument \verb|subtext| is set to the extracted text;
+\verb|subtext_len| is the length of the text to be extracted; and \verb|subtext_pos| is the position from which the text
+should be extracted from. The extracted subtext is filled with nulls for any part of it that extends
+beyond the bounds of the text record.
+
+\begin{verbatim}
+boolean TXT_getpos_text (unsigned int text, unsigned int symbol,
+    unsigned int *pos)
+\end{verbatim}
+
+\vspace{-0.2cm}
+Returns TRUE if the symbol is found in the text. The argument pos is set to the
+position of the first symbol in the text that matches the specified symbol if
+found, otherwise it remains unchanged.
+
+\begin{verbatim}
+boolean TXT_getrpos_text (unsigned int text, unsigned int symbol,
+    unsigned int *pos)
+\end{verbatim}
+
+\vspace{-0.2cm}
+Returns TRUE if the symbol is found in the text. The argument \verb|pos| is set to the
+position of the last symbol in the text that matches the specified symbol if
+found, otherwise it remains unchanged.
+
+\begin{verbatim}
+boolean TXT_getsymbol_text (unsigned int text, unsigned int pos, *symbol);
+\end{verbatim}
+
+\vspace{-0.2cm}
+Returns TRUE if there exists a symbol at position exists in the text. 
+The argument \verb|symbol| us set to the specified symbol.
+
+\begin{verbatim}
+int TXT_getline_text (FILE *fp, unsigned int text);
+\end{verbatim}
+
+\vspace{-0.2cm}
+Reads in a line of text from the specified file. Returns the last character
+read or EOF.
+
+\begin{verbatim}
+void TXT_insert_text (unsigned int text, unsigned int symbol);
+\end{verbatim}
+
+\vspace{-0.2cm}
+Inserts symbol into the text.
+
+\begin{verbatim}
+boolean TXT_is_alpha (unsigned int symbol);
+\end{verbatim}
+
+\vspace{-0.2cm}
+Returns TRUE if symbol is an alphabetic character.
+
+\begin{verbatim}
+boolean TXT_is_alphanumeric (unsigned int symbol);
+\end{verbatim}
+
+\vspace{-0.2cm}
+Returns TRUE if symbol is an alphanumeric character.
+
+\begin{verbatim}
+boolean TXT_is_consonant (unsigned int symbol);
+\end{verbatim}
+
+\vspace{-0.2cm}
+Returns TRUE if symbol is a consonant.
+
+\begin{verbatim}
+boolean TXT_is_control (unsigned int symbol);
+\end{verbatim}
+
+\vspace{-0.2cm}
+Returns TRUE if symbol is a control character.
+
+\begin{verbatim}
+boolean TXT_is_digit (unsigned int symbol);
+\end{verbatim}
+
+\vspace{-0.2cm}
+Returns TRUE if symbol is a digit.
+
+\begin{verbatim}
+boolean TXT_is_graph (unsigned int symbol);
+\end{verbatim}
+
+\vspace{-0.2cm}
+Returns TRUE if symbol is a printable character except space.
+
+\begin{verbatim}
+boolean TXT_is_lower (unsigned int symbol);
+\end{verbatim}
+
+\vspace{-0.2cm}
+Returns TRUE if symbol is a uppercace character.
+
+\begin{verbatim}
+boolean TXT_is_print (unsigned int symbol);
+\end{verbatim}
+
+\vspace{-0.2cm}
+Returns TRUE if symbol is a printable character.
+
+\begin{verbatim}
+boolean TXT_is_punct (unsigned int symbol);
+\end{verbatim}
+
+\vspace{-0.2cm}
+Returns TRUE if symbol is a punctuation character.
+
+\begin{verbatim}
+boolean TXT_is_space (unsigned int symbol);
+\end{verbatim}
+
+\vspace{-0.2cm}
+Returns TRUE if symbol is a white space character.
+
+\begin{verbatim}
+boolean TXT_is_upper (unsigned int symbol);
+\end{verbatim}
+
+\vspace{-0.2cm}
+Returns TRUE if symbol is a uppercace character.
+
+\begin{verbatim}
+boolean TXT_is_vowel (unsigned int symbol);
+\end{verbatim}
+
+\vspace{-0.2cm}
+Returns TRUE if symbol is a vowel.
+
+\begin{verbatim}
+unsigned int TXT_length_text (unsigned int text);
+\end{verbatim}
+
+\vspace{-0.2cm}
+Returns the number of symbols in the text record.
+
+\begin{verbatim}
+unsigned int TXT_load_text (FILE *fp);
+\end{verbatim}
+
+\vspace{-0.2cm}
+Creates a new text record and text number, then loads it using text from the specified file.
+
+\begin{verbatim}
+void TXT_putsymbol_text (unsigned int text, unsigned int symbol, unsigned int pos)
+\end{verbatim}
+
+\vspace{-0.2cm}
+Inserts the symbol at position pos into the text. Inserting a symbol beyond
+the current bounds of the text will cause a run-time error.
+
+\begin{verbatim}
+void TXT_release_text (unsigned int text);
+\end{verbatim}
+
+\vspace{-0.2cm}
+Releases the memory allocated to the text record and the text number (which may
+be reused in later \verb|TXT_create_text| calls).
+
+\begin{verbatim}
+unsigned int TXT_setlength_text (unsigned int text, unsigned int length);
+\end{verbatim}
+
+\vspace{-0.2cm}
+Sets the length of the text record to be at most length symbols long. If the
+current length of the text is longer than this, then the text will be
+truncated to the required length, otherwise the length will remain
+unchanged. Setting the length of the text to be 0 will set the text
+to the null string.
+
+\begin{verbatim}
+void TXT_sprintf_text (unsigned int text, char *format, ...);
+\end{verbatim}
+
+\vspace{-0.2cm}
+Sets the text record to the symbols specified by the format and variable length
+argument list.
+
+The format string is composed of zero or more directives: ordinary characters (not \%),
+which are copied unchanged to the text record;  and conversion specifications, each of
+which results in fetching zero or more subsequent arguments.  Each conversion
+specification is introduced by the character \%. After the \%,
+the following appear in sequence:
+
+\begin{tabular}{lp{12.8cm}}
+\verb|%| & The \% (percentage) character is inserted into the text. \\
+\verb|s| & The argument list contains a symbol number (unsigned int) which will be inserted into the
+	   text record at the location specified by the format specification. \\
+\end{tabular}
+
+\section{Appendix C---Markup model routines}
+
+This appendix describes all of the markup model routines that
+can be used for correcting or ``marking up'' sequential text.
+All these routines may be identified by their common prefix \verb|TMM_|.
+
+\begin{verbatim}
+void TMM_add_markup (unsigned int markup_model, float codelength,
+     char *observed_text_format, char *markup_text_format, ...);
+\end{verbatim}
+
+\vspace{-0.2cm}
+Adds the formatted correction to the markup model. The argument \verb|observed_text_format| is the format of the observed text
+begin corrected; \verb|markup_text_format| is the format of the text it will be corrected to; and codelength is the
+cost in bits of making that correction when the text is being corrected. These arguments are followed by a variable length
+list of arguments as specified by the observed text and markup text formats.
+
+The format string is composed of zero or more directives: ordinary characters (not \%),
+which are copied unchanged to the markup text (i.e the corrected text); and conversion specifications which follow
+the character \%, each of which results in fetching zero or more subsequent arguments.
+
+The conversion specifications for the observed text format are the following:
+
+\begin{tabular}{lp{12.8cm}}
+\verb|%|    & This will match the \% (percentage) character. \\
+\verb|m|    & This will match when the predicting model has the same model number as the
+              corresponding one specified in the argument list. \\
+\verb|s|    & This will match the corresponding symbol in the argument list. \\
+\verb|f|    & Function symbols: the argument list contains a pointer to a boolean function that takes an
+              unsigned int symbol number as its only argument and returns a non-zero value
+              if the current context symbol number is a valid match. The format of the boolean
+              function is the following: \verb|boolean (*function) (unsigned int symbol)|
+              (example: \verb|TXT_is_alphannumeric (symbol)|). \\
+\verb|w|    & Wildcard symbol: this will match the current symbol in the context. \\
+\verb|[..]| & Range symbols: this will match any symbol specified between the
+              square brackets. Example: \verb|%[aeiou]| matches vowels. \\
+\end{tabular}
+
+
+\vspace{0.2cm}
+The conversion specifications for the markup text format are the following:
+
+\begin{tabular}{lp{12.8cm}}
+\verb|%|    & The \% (percentage) character is inserted into the markup text. \\
+\verb|m|    & The argument list contains a model number which will be used
+              to predict subsequent symbols in the markup text. \\
+\verb|s|    & The argument list contains a symbol number (unsigned int) which will be
+	      inserted into the markup text. \\
+\verb|f|    & Function symbol: this will insert the matching function symbol from the context into the
+              markup text. \\
+\verb|w|    & Wildcard symbol: this will insert the matching symbol from the context
+              into the markup text. \\
+\verb|r|    & Range symbol: this will insert the matching range symbol from the context into the
+	      markup text. \\
+\verb|[..]| & Range symbols: this will generate markup texts for all the symbols
+              specified between the square brackets. \\
+\end{tabular}
+
+Examples:
+
+\vspace{-0.2cm}
+   \begin{verbatim}
+   TMM_add_markup (markup_model, codelength, "1", "a");
+   \end{verbatim}
+
+\vspace{-0.6cm}
+   This generates a single markup that replaces the character ``1'' with the letter ``a''.
+
+   \begin{verbatim}
+   TMM_add_markup (markup_model, codelength, "%w", "%w ");
+   \end{verbatim}
+
+\vspace{-0.6cm}
+   This generates a single markup that inserts an extra space after each symbol.
+
+   \begin{verbatim}
+   TMM_add_markup (markup_model, codelength, "%f", "%f ", TXT_is_alphabetic);
+   \end{verbatim}
+
+\vspace{-0.6cm}
+   This generates a single markup that inserts an extra space after each alphabetic symbol.
+
+   \begin{verbatim}
+   TMM_add_markup (markup_model, codelength, "%[xy]", "%r%[abc]");
+   \end{verbatim}
+
+\vspace{-0.6cm}
+   This generates the following markup corrections: ``x'' is corrected to ``xa'', ``xb'' and ``xc'';
+   ``y'' is corrected to ``ya'', ``yb'' and ``yc''.
+
+\begin{verbatim}
+unsigned int TMM_create_markup (void);
+\end{verbatim}
+
+\vspace{-0.2cm}
+Creates and returns an unsigned integer which provides a reference to a record associated
+with a markup model used to correct or ``mark up'' text. The argument \verb|markup_algorithm| specifies
+   the type of markup algorithm to use such as \verb|TMM_Viterbi|, and is followed by a varying
+   number of arguments as determined by the \verb|markup_algorithm|. 
+
+\begin{verbatim}
+void TMM_dump_markup (FILE *fp, unsigned int markup_model);
+\end{verbatim}
+
+\vspace{-0.2cm}
+Prints a human readable version of the markup model (intended mainly for debugging).
+
+\begin{verbatim}
+unsigned int TMM_perform_markup (unsigned int markup_model,
+    unsigned int language_model, unsigned int source_text);
+\end{verbatim}
+
+\vspace{-0.2cm}
+Creates and returns an unsigned integer which provides a reference to a text record
+that contains the observed text corrected according to the markup and language models.
+
+\begin{verbatim}
+void TMM_release_markup (unsigned int markup_model);
+\end{verbatim}
+
+\vspace{-0.2cm}
+Releases the memory allocated to the markup record and the markup number
+(which may be reused in later \verb|TMM_create_markup| calls).
+
+\begin{verbatim}
+void TMM_start_markup (unsigned int markup_model, unsigned int language_model);
+\end{verbatim}
+
+\vspace{-0.2cm}
+Starts a new process for correcting or ``marking up'' text using the specified
+language model. This routine must be called at least once before
+\verb|TMM_perform_markup| is called. Multiple calls to this procedure will cause
+separate searches to be initiated for each of the specified language models.
+
+}
+
+\end{document}
