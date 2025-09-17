@@ -16,7 +16,6 @@ OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 NATIVE_OUT = OUTPUT_DIR / "malayalam_native_corpus.txt"
 TRANSLIT_OUT = OUTPUT_DIR / "malayalam_transliterated_corpus.txt"
 
-# ---------- CLEANING ----------
 def clean_malayalam(text: str) -> str:
     """Keep only Malayalam (U+0D00–U+0D7F), basic punctuation, and spaces"""
     text = re.sub(r"[^\u0D00-\u0D7F\s.,!?;:]", " ", text)
@@ -24,7 +23,6 @@ def clean_malayalam(text: str) -> str:
     return text
 
 # ---------- TRANSLITERATION ----------
-# (reuse your mappings)
 
 vowels_exclude = ['അ','ആ','ഇ','ഈ','ഉ','ഊ','ഋ','എ','ഏ','ഐ','ഒ','ഓ','ഔ','ം']
 
@@ -99,7 +97,6 @@ def transliterate(text: str) -> str:
 
     return result
 
-# ---------- PIPELINE ----------
 def build_corpora():
     with open(NATIVE_OUT, "w", encoding="utf-8") as fout_native, \
          open(TRANSLIT_OUT, "w", encoding="utf-8") as fout_translit:
@@ -120,6 +117,5 @@ def build_corpora():
     print(f"✓ Native corpus saved to {NATIVE_OUT}")
     print(f"✓ Transliterated corpus saved to {TRANSLIT_OUT}")
 
-# ---------- MAIN ----------
 if __name__ == "__main__":
     build_corpora()

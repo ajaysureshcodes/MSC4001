@@ -321,7 +321,6 @@ class MalayalamEvaluator:
         
         print(f"\nDetailed results saved in: {self.results_dir / 'evaluation_results.json'}")
 
-# Quick setup and run script
 def main():
     TAWA_PATH = "/mnt/f/Research/malayalam_tawa_project/Tawa/Tawa-1.1"
     ANALYSIS_DIR = "/mnt/f/Research/malayalam_tawa_project/malayalam_analysis"

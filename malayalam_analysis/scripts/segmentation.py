@@ -251,7 +251,7 @@ class SimpleSegmentationAnalyzer:
             if results:
                 all_results[f"{corpus_type}_with_own_model"] = results
         
-        # Cross-model analysis (Malayalam text with transliterated model, etc.)
+        # Cross model analysis (Malayalam text with transliterated model for example)
         if len(corpora) >= 2:
             corpus_keys = list(corpora.keys())
             
@@ -277,7 +277,7 @@ class SimpleSegmentationAnalyzer:
             if cross_results2:
                 all_results[f"{corpus_keys[1]}_with_{corpus_keys[0]}_model"] = cross_results2
         
-        # Save results
+        # Saving results
         results_file = self.results_dir / 'segmentation_analysis_results.json'
         with open(results_file, 'w', encoding='utf-8') as f:
             json.dump(all_results, f, indent=2, default=str)

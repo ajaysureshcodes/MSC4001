@@ -1,0 +1,78 @@
+======================================================================
+MALAYALAM SEGMENTATION ANALYSIS - DETAILED RESULTS
+======================================================================
+
+EXECUTIVE SUMMARY
+--------------------------------------------------
+  ✓ Models successfully distinguish between Malayalam script types
+  ✓ Malayalam native model shows good word boundary understanding
+  ✓ Transliterated model shows good word boundary understanding
+  • Malayalam native script compresses better than transliterated
+
+DETAILED ANALYSIS
+--------------------------------------------------
+
+1. WORD BOUNDARY UNDERSTANDING:
+   (Models that compress 'original' better than 'no spaces' understand word boundaries)
+
+   Malayalam Native With Own Model:
+     Status: ✓ GOOD
+     BPC Difference: 0.215
+
+   Malayalam Transliterated With Own Model:
+     Status: ✓ GOOD
+     BPC Difference: 0.883
+
+   Malayalam Native With Malayalam Transliterated Model:
+     Status: ✗ POOR
+     BPC Difference: 0.029
+
+   Malayalam Transliterated With Malayalam Native Model:
+     Status: ✓ GOOD
+     BPC Difference: 0.713
+
+2. CROSS-MODEL PERFORMANCE:
+
+   Malayalam native text prefers native model: True
+   Transliterated text prefers trans model: True
+   Models distinguish correctly: True
+
+3. COMPRESSION PERFORMANCE SUMMARY:
+
+   Best compression: malayalam native with own model
+   Bits per character: 1.31
+
+4. SPECIFIC METRICS:
+
+   MALAYALAM NATIVE WITH OWN MODEL:
+     Original spacing: 1.310 BPC
+     No spaces: 1.525 BPC
+     Compression ratio: 6.11x
+
+   MALAYALAM TRANSLITERATED WITH OWN MODEL:
+     Original spacing: 1.477 BPC
+     No spaces: 2.360 BPC
+     Compression ratio: 5.42x
+
+   MALAYALAM NATIVE WITH MALAYALAM TRANSLITERATED MODEL:
+     Original spacing: 7.620 BPC
+     No spaces: 7.649 BPC
+     Compression ratio: 1.05x
+
+   MALAYALAM TRANSLITERATED WITH MALAYALAM NATIVE MODEL:
+     Original spacing: 15.681 BPC
+     No spaces: 16.394 BPC
+     Compression ratio: 0.51x
+
+5. DISSERTATION INSIGHTS:
+
+   • Malayalam script and transliteration have distinct compression signatures
+   • PPM models learn orthography-specific word boundary patterns
+   • Cross-model testing reveals script-specific statistical structures
+   • Compression-based analysis provides quantitative evidence of linguistic differences
+
+6. QUANTITATIVE EVIDENCE:
+
+   Native model advantage for Malayalam text: 6.310 BPC improvement
+   Transliterated model advantage: 14.204 BPC improvement
+   Total distinguishability: 20.514 BPC

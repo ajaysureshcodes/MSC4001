@@ -58,7 +58,7 @@ def train_malayalam_model(tawa_path, corpus_file, model_file, alphabet_size, tit
     
     return False
 
-# Usage
+
 if __name__ == "__main__":
     TAWA_PATH = "/mnt/f/Research/malayalam_tawa_project/Tawa/Tawa-1.1"
     ANALYSIS_DIR = "/mnt/f/Research/malayalam_tawa_project/malayalam_analysis"
